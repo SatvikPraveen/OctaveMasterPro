@@ -1,0 +1,34 @@
+Failure_ID,Equipment_ID,Failure_Date,Failure_Time,Failure_Type,Severity,Downtime_Minutes,Repair_Cost,Root_Cause,Description,Resolved_Date
+FLR0001,EQ002,2022-01-05,18:41:43,Software,Medium,334,1096.24,Communication failure,Software failure in EQ002,2022-01-05
+FLR0002,EQ008,2022-01-29,23:55:20,Thermal,Medium,308,2614.18,Heat exchanger fouling,Medium severity thermal issue,2022-01-29
+FLR0003,EQ003,2022-03-04,09:59:13,Mechanical,Low,56,577.86,Bearing failure,Low severity mechanical issue,2022-03-04
+FLR0004,EQ004,2022-03-23,19:41:05,Thermal,Critical,1203,17932.06,Cooling system failure,Unexpected shutdown due to cooling system failure,2022-03-23
+FLR0005,EQ015,2022-04-15,14:23:17,Electrical,High,892,7234.15,Insulation breakdown,Electrical failure in EQ015,2022-04-15
+FLR0006,EQ003,2022-05-28,07:18:22,Hydraulic,Medium,445,2891.44,Seal failure,Hydraulic failure in EQ003,2022-05-28
+FLR0007,EQ007,2022-06-12,11:35:48,Mechanical,High,678,6127.89,Fatigue crack,Unexpected shutdown due to fatigue crack,2022-06-12
+FLR0008,EQ013,2022-07-19,16:42:31,Electrical,Low,127,412.33,Component failure,Low severity electrical issue,2022-07-19
+FLR0009,EQ002,2022-08-03,20:15:09,Hydraulic,Medium,398,2154.72,Contamination,Medium severity hydraulic issue,2022-08-03
+FLR0010,EQ006,2022-09-14,05:27:56,Thermal,High,756,8456.23,Overheating,High severity thermal issue,2022-09-14
+FLR0011,EQ012,2022-10-28,13:54:12,Mechanical,Critical,1445,19876.51,Wear and tear,Production stoppage - wear and tear,2022-10-28
+FLR0012,EQ003,2022-11-11,22:08:37,Electrical,Medium,367,3287.65,Short circuit,Electrical failure in EQ003,2022-11-11
+FLR0013,EQ007,2022-12-25,08:19:44,Software,Low,89,178.94,Logic error,Software failure in EQ007,2022-12-25
+FLR0014,EQ015,2023-01-17,17:33:21,Mechanical,Medium,523,4156.78,Misalignment,Mechanical failure in EQ015,2023-01-17
+FLR0015,EQ013,2023-02-09,12:47:15,Thermal,High,634,7892.34,Thermal expansion,Unexpected shutdown due to thermal expansion,2023-02-09
+FLR0016,EQ003,2023-03-26,06:25:58,Hydraulic,Low,98,689.45,Valve malfunction,Hydraulic failure in EQ003,2023-03-26
+FLR0017,EQ007,2023-04-18,14:56:32,Electrical,Critical,1378,21567.89,Overheating,Critical severity electrical issue,2023-04-18
+FLR0018,EQ012,2023-05-12,19:12:47,Mechanical,High,789,8234.56,Bearing failure,High severity mechanical issue,2023-05-12
+FLR0019,EQ002,2023-06-28,03:38:14,Software,Medium,267,634.78,Configuration issue,Production stoppage - configuration issue,2023-06-28
+FLR0020,EQ006,2023-07-15,10:44:29,Thermal,Medium,445,3567.12,Heat exchanger fouling,Thermal failure in EQ006,2023-07-15
+FLR0021,EQ013,2023-08-07,15:21:05,Mechanical,Low,134,892.34,Wear and tear,Mechanical failure in EQ013,2023-08-07
+FLR0022,EQ003,2023-09-23,21:17:38,Electrical,High,723,6789.23,Insulation breakdown,Unexpected shutdown due to insulation breakdown,2023-09-23
+FLR0023,EQ007,2023-10-11,04:52:16,Hydraulic,Medium,356,2134.67,Pressure loss,Medium severity hydraulic issue,2023-10-11
+FLR0024,EQ012,2023-11-04,09:28:52,Thermal,Critical,1567,23456.78,Cooling system failure,Emergency shutdown due to cooling system failure,2023-11-04
+FLR0025,EQ010,2023-11-18,16:14:33,Mechanical,Medium,478,3245.89,Misalignment,Mechanical failure in EQ010,2023-11-18
+FLR0026,EQ003,2023-12-12,11:39:21,Software,Low,76,145.23,Sensor calibration,Low severity software issue,2023-12-12
+FLR0027,EQ011,2023-12-29,07:55:47,Electrical,Medium,389,2987.65,Component failure,Electrical failure in EQ011,2023-12-29
+FLR0028,EQ007,2024-01-15,13:22:19,Mechanical,High,845,7654.32,Fatigue crack,High severity mechanical issue,2024-01-15
+FLR0029,EQ012,2024-01-22,18:46:08,Hydraulic,Critical,1234,18745.67,Seal failure,Critical failure repair,2024-01-22
+FLR0030,EQ003,2024-01-28,02:31:54,Thermal,Medium,456,3567.89,Overheating,Thermal failure in EQ003,2024-01-28
+FLR0031,EQ010,2024-01-30,08:17:26,Electrical,Low,112,567.34,Component failure,Electrical failure in EQ010,2024-01-30
+FLR0032,EQ012,2024-01-30,14:03:41,Mechanical,High,678,6234.78,Bearing failure,Mechanical failure in EQ012,2024-01-30
+FLR0033,EQ007,2024-01-30,20:48:15,Software,Medium,289,723.45,Communication failure,Software failure in EQ007,2024-01-30

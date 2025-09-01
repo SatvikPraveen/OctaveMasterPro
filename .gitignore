@@ -1,0 +1,241 @@
+# File location: OctaveMasterPro/.gitignore
+
+# ==========================================
+# JUPYTER & NOTEBOOK FILES
+# ==========================================
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+*.ipynb_checkpoints
+
+# Jupyter runtime files
+.jupyter/
+jupyter_notebook_config.py
+
+# ==========================================
+# OCTAVE SPECIFIC
+# ==========================================
+# Octave session info
+octave-workspace
+octave-core
+.octaverc
+
+# Octave temporary files
+*.m~
+*~
+
+# Octave figures
+*.fig
+
+# ==========================================
+# DATA & DATASETS
+# ==========================================
+# Large datasets (keep structure, ignore content)
+datasets/*.csv
+datasets/*.dat
+datasets/*.txt
+datasets/*.json
+datasets/*.xlsx
+datasets/*.xls
+datasets/*.mat
+datasets/images/*.jpg
+datasets/images/*.jpeg
+datasets/images/*.png
+datasets/images/*.tiff
+datasets/images/*.bmp
+datasets/signals/*.wav
+datasets/signals/*.mp3
+datasets/signals/*.dat
+
+# But keep example/sample files
+!datasets/*sample*
+!datasets/*example*
+!datasets/*demo*
+
+# ==========================================
+# BUILD & DISTRIBUTION
+# ==========================================
+build/
+dist/
+*.tar.gz
+*.zip
+*.rar
+
+# ==========================================
+# DOCKER & CONTAINERS
+# ==========================================
+# Docker volumes
+.docker-volumes/
+
+# Docker logs
+docker-compose.override.yml
+.env.local
+
+# ==========================================
+# IDE & EDITORS
+# ==========================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ / PyCharm
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ==========================================
+# OPERATING SYSTEM
+# ==========================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.directory
+.fuse_hidden*
+
+# ==========================================
+# PYTHON (for Jupyter support)
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==========================================
+# LOGS & TEMPORARY FILES
+# ==========================================
+*.log
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# Application logs
+logs/
+log/
+
+# ==========================================
+# PROJECT SPECIFIC
+# ==========================================
+# Generated reports
+flagship_project/report/*.pdf
+flagship_project/report/*.html
+flagship_project/report/*.docx
+
+# Compiled documentation
+docs/_build/
+docs/build/
+
+# Large output files from mini projects
+mini_projects/*/output/*.avi
+mini_projects/*/output/*.mp4
+mini_projects/*/output/large_*
+
+# Performance benchmarks results
+benchmarks/results/
+performance_logs/
+
+# ==========================================
+# SECURITY & CREDENTIALS
+# ==========================================
+*.key
+*.pem
+*.crt
+config/secrets.yml
+.env
+.env.local
+.env.*.local
+secrets.json
+
+# ==========================================
+# CACHE & TEMPORARY
+# ==========================================
+.cache/
+tmp/
+temp/
+*.cache
+
+# Octave package cache
+pkg/
+
+# System cache
+.sass-cache/
+.npm/
+
+# ==========================================
+# VERSION CONTROL
+# ==========================================
+.git/
+*.orig
+*.rej
+
+# ==========================================
+# TESTING & COVERAGE
+# ==========================================
+.coverage
+.pytest_cache/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# ==========================================
+# DOCUMENTATION BUILD
+# ==========================================
+site/
+_site/
+
+# Keep important empty directories with .gitkeep
+!**/.gitkeep

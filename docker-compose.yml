@@ -1,0 +1,45 @@
+# File location: OctaveMasterPro/docker-compose.yml
+
+version: "3.8"
+
+services:
+  octave-master:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: octave_master_pro
+    ports:
+      - "8888:8888" # Jupyter Lab
+      - "8889:8889" # Alternative port
+    volumes:
+      - ./notebooks:/workspace/OctaveMasterPro/notebooks
+      - ./utils:/workspace/OctaveMasterPro/utils
+      - ./datasets:/workspace/OctaveMasterPro/datasets
+      - ./mini_projects:/workspace/OctaveMasterPro/mini_projects
+      - ./flagship_project:/workspace/OctaveMasterPro/flagship_project
+      - ./cheatsheets:/workspace/OctaveMasterPro/cheatsheets
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - OCTAVE_PATH=/workspace/OctaveMasterPro/utils:/workspace/OctaveMasterPro/notebooks/scripts_for_notebook_04
+    working_dir: /workspace/OctaveMasterPro
+    restart: unless-stopped
+
+  # Optional: Standalone Octave service for CLI access
+  octave-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: octave_cli
+    volumes:
+      - ./notebooks:/workspace/OctaveMasterPro/notebooks
+      - ./utils:/workspace/OctaveMasterPro/utils
+      - ./datasets:/workspace/OctaveMasterPro/datasets
+      - ./mini_projects:/workspace/OctaveMasterPro/mini_projects
+      - ./flagship_project:/workspace/OctaveMasterPro/flagship_project
+    environment:
+      - OCTAVE_PATH=/workspace/OctaveMasterPro/utils:/workspace/OctaveMasterPro/notebooks/scripts_for_notebook_04
+    working_dir: /workspace/OctaveMasterPro
+    command: octave --no-gui --interactive
+    stdin_open: true
+    tty: true
+    profiles: ["cli"]

@@ -1,0 +1,108 @@
+Maintenance_ID,Equipment_ID,Maintenance_Date,Maintenance_Type,Duration_Hours,Cost,Technician,Description,Status
+MNT0001,EQ001,2022-01-15,Preventive,3.2,612.50,John_Smith,Routine inspection and lubrication,Completed
+MNT0002,EQ001,2022-04-18,Preventive,2.8,498.75,Maria_Garcia,Filter replacement,Completed
+MNT0003,EQ001,2022-07-22,Corrective,6.4,1547.80,David_Chen,Bearing replacement,Completed
+MNT0004,EQ001,2022-10-14,Preventive,3.5,663.25,Sarah_Johnson,Belt tension adjustment,Completed
+MNT0005,EQ001,2023-01-08,Preventive,4.1,721.88,Mike_Wilson,Calibration check,Completed
+MNT0006,EQ001,2023-04-12,Corrective,8.2,2156.40,John_Smith,Seal repair,Completed
+MNT0007,EQ001,2023-07-16,Preventive,2.9,523.75,Maria_Garcia,Routine inspection and lubrication,Completed
+MNT0008,EQ001,2023-10-20,Predictive,2.4,612.00,David_Chen,Vibration analysis,Completed
+MNT0009,EQ002,2022-02-03,Preventive,4.2,798.50,Sarah_Johnson,Filter replacement,Completed
+MNT0010,EQ002,2022-05-17,Emergency,12.4,4980.00,Mike_Wilson,Critical failure repair,Completed
+MNT0011,EQ002,2022-08-21,Corrective,7.1,1789.20,John_Smith,Component alignment,Completed
+MNT0012,EQ002,2022-11-15,Preventive,3.8,684.75,Maria_Garcia,Routine inspection and lubrication,Completed
+MNT0013,EQ002,2023-02-18,Predictive,1.9,513.00,David_Chen,Oil analysis,Completed
+MNT0014,EQ002,2023-05-24,Preventive,4.5,831.25,Sarah_Johnson,Belt tension adjustment,Completed
+MNT0015,EQ002,2023-08-28,Corrective,5.9,1523.80,Mike_Wilson,Wiring repair,Completed
+MNT0016,EQ002,2023-12-02,Preventive,3.1,558.75,John_Smith,Calibration check,Completed
+MNT0017,EQ003,2022-01-28,Preventive,5.2,934.00,Maria_Garcia,Routine inspection and lubrication,Completed
+MNT0018,EQ003,2022-04-14,Corrective,9.8,2654.40,David_Chen,Bearing replacement,Completed
+MNT0019,EQ003,2022-07-19,Emergency,15.2,6840.00,Sarah_Johnson,Emergency shutdown repair,Completed
+MNT0020,EQ003,2022-10-23,Preventive,4.7,846.25,Mike_Wilson,Filter replacement,Completed
+MNT0021,EQ003,2023-01-27,Corrective,6.8,1789.60,John_Smith,Seal repair,Completed
+MNT0022,EQ003,2023-04-30,Predictive,2.7,729.00,Maria_Garcia,Thermal imaging inspection,Completed
+MNT0023,EQ003,2023-08-05,Preventive,3.9,702.25,David_Chen,Belt tension adjustment,Completed
+MNT0024,EQ003,2023-11-08,Corrective,7.5,1998.00,Sarah_Johnson,Component alignment,Completed
+MNT0025,EQ004,2022-03-12,Preventive,2.6,468.00,Mike_Wilson,Calibration check,Completed
+MNT0026,EQ004,2022-06-18,Preventive,4.8,864.00,John_Smith,Routine inspection and lubrication,Completed
+MNT0027,EQ004,2022-09-24,Corrective,11.2,3024.00,Maria_Garcia,Critical failure repair,Completed
+MNT0028,EQ004,2022-12-30,Predictive,3.4,918.00,David_Chen,Performance optimization,Completed
+MNT0029,EQ004,2023-03-18,Preventive,5.1,918.00,Sarah_Johnson,Filter replacement,Completed
+MNT0030,EQ004,2023-06-22,Corrective,8.9,2403.80,Mike_Wilson,Wiring repair,Completed
+MNT0031,EQ004,2023-09-28,Preventive,3.7,666.00,John_Smith,Belt tension adjustment,Completed
+MNT0032,EQ005,2022-02-15,Preventive,2.8,504.00,Maria_Garcia,Routine inspection and lubrication,Completed
+MNT0033,EQ005,2022-05-21,Preventive,4.3,774.00,David_Chen,Calibration check,Completed
+MNT0034,EQ005,2022-08-27,Corrective,6.7,1742.00,Sarah_Johnson,Bearing replacement,Completed
+MNT0035,EQ005,2022-12-01,Preventive,3.5,630.00,Mike_Wilson,Filter replacement,Completed
+MNT0036,EQ005,2023-03-07,Predictive,1.8,486.00,John_Smith,Oil analysis,Completed
+MNT0037,EQ005,2023-06-13,Preventive,4.9,882.00,Maria_Garcia,Belt tension adjustment,Completed
+MNT0038,EQ005,2023-09-19,Corrective,5.4,1404.00,David_Chen,Seal repair,Completed
+MNT0039,EQ006,2022-01-09,Emergency,18.7,8415.00,Sarah_Johnson,Safety system restore,Completed
+MNT0040,EQ006,2022-04-16,Preventive,4.6,828.00,Mike_Wilson,Routine inspection and lubrication,Completed
+MNT0041,EQ006,2022-07-23,Corrective,7.8,2028.00,John_Smith,Component alignment,Completed
+MNT0042,EQ006,2022-10-29,Preventive,3.2,576.00,Maria_Garcia,Filter replacement,Completed
+MNT0043,EQ006,2023-02-04,Predictive,2.1,567.00,David_Chen,Vibration analysis,Completed
+MNT0044,EQ006,2023-05-13,Preventive,5.7,1026.00,Sarah_Johnson,Calibration check,Completed
+MNT0045,EQ006,2023-08-19,Corrective,9.3,2418.00,Mike_Wilson,Bearing replacement,Completed
+MNT0046,EQ007,2022-02-26,Preventive,3.9,702.00,John_Smith,Belt tension adjustment,Completed
+MNT0047,EQ007,2022-06-04,Corrective,8.5,2210.00,Maria_Garcia,Wiring repair,Completed
+MNT0048,EQ007,2022-09-10,Emergency,14.1,6345.00,David_Chen,Production line recovery,Completed
+MNT0049,EQ007,2022-12-17,Preventive,4.4,792.00,Sarah_Johnson,Routine inspection and lubrication,Completed
+MNT0050,EQ007,2023-03-25,Predictive,3.2,864.00,Mike_Wilson,Thermal imaging inspection,Completed
+MNT0051,EQ007,2023-07-01,Preventive,2.7,486.00,John_Smith,Filter replacement,Completed
+MNT0052,EQ007,2023-10-07,Corrective,6.2,1612.00,Maria_Garcia,Seal repair,Completed
+MNT0053,EQ008,2022-03-19,Preventive,5.1,918.00,David_Chen,Calibration check,Completed
+MNT0054,EQ008,2022-06-25,Preventive,3.8,684.00,Sarah_Johnson,Routine inspection and lubrication,Completed
+MNT0055,EQ008,2022-10-02,Corrective,10.4,2704.00,Mike_Wilson,Critical failure repair,Completed
+MNT0056,EQ008,2023-01-07,Predictive,2.3,621.00,John_Smith,Performance optimization,Completed
+MNT0057,EQ008,2023-04-15,Preventive,4.7,846.00,Maria_Garcia,Filter replacement,Completed
+MNT0058,EQ008,2023-07-22,Corrective,7.9,2054.00,David_Chen,Component alignment,Completed
+MNT0059,EQ008,2023-10-28,Preventive,3.6,648.00,Sarah_Johnson,Belt tension adjustment,Completed
+MNT0060,EQ009,2022-01-22,Preventive,4.2,756.00,Mike_Wilson,Routine inspection and lubrication,Completed
+MNT0061,EQ009,2022-04-30,Emergency,21.3,9585.00,John_Smith,Emergency shutdown repair,Completed
+MNT0062,EQ009,2022-08-06,Corrective,13.7,3562.00,Maria_Garcia,Bearing replacement,Completed
+MNT0063,EQ009,2022-11-12,Preventive,5.8,1044.00,David_Chen,Calibration check,Completed
+MNT0064,EQ009,2023-02-18,Predictive,3.7,999.00,Sarah_Johnson,Oil analysis,Completed
+MNT0065,EQ009,2023-05-27,Preventive,4.9,882.00,Mike_Wilson,Filter replacement,Completed
+MNT0066,EQ009,2023-09-03,Corrective,11.8,3068.00,John_Smith,Wiring repair,Completed
+MNT0067,EQ010,2022-02-08,Preventive,2.9,522.00,Maria_Garcia,Belt tension adjustment,Completed
+MNT0068,EQ010,2022-05-16,Preventive,3.4,612.00,David_Chen,Routine inspection and lubrication,Completed
+MNT0069,EQ010,2022-08-22,Corrective,5.8,1508.00,Sarah_Johnson,Seal repair,Completed
+MNT0070,EQ010,2022-11-28,Predictive,1.7,459.00,Mike_Wilson,Vibration analysis,Completed
+MNT0071,EQ010,2023-03-06,Preventive,4.1,738.00,John_Smith,Filter replacement,Completed
+MNT0072,EQ010,2023-06-12,Corrective,6.3,1638.00,Maria_Garcia,Component alignment,Completed
+MNT0073,EQ010,2023-09-18,Preventive,3.8,684.00,David_Chen,Calibration check,Completed
+MNT0074,EQ011,2022-03-05,Emergency,16.8,7560.00,Sarah_Johnson,Safety system restore,Completed
+MNT0075,EQ011,2022-06-11,Preventive,5.4,972.00,Mike_Wilson,Routine inspection and lubrication,Completed
+MNT0076,EQ011,2022-09-17,Corrective,9.1,2366.00,John_Smith,Bearing replacement,Completed
+MNT0077,EQ011,2022-12-24,Preventive,4.6,828.00,Maria_Garcia,Filter replacement,Completed
+MNT0078,EQ011,2023-03-31,Predictive,2.8,756.00,David_Chen,Thermal imaging inspection,Completed
+MNT0079,EQ011,2023-07-07,Preventive,3.7,666.00,Sarah_Johnson,Belt tension adjustment,Completed
+MNT0080,EQ011,2023-10-14,Corrective,7.2,1872.00,Mike_Wilson,Wiring repair,Completed
+MNT0081,EQ012,2022-01-31,Preventive,4.8,864.00,John_Smith,Calibration check,Completed
+MNT0082,EQ012,2022-05-09,Corrective,12.6,3276.00,Maria_Garcia,Critical failure repair,Completed
+MNT0083,EQ012,2022-08-15,Emergency,19.4,8730.00,David_Chen,Production line recovery,Completed
+MNT0084,EQ012,2022-11-21,Preventive,3.3,594.00,Sarah_Johnson,Routine inspection and lubrication,Completed
+MNT0085,EQ012,2023-02-27,Predictive,2.6,702.00,Mike_Wilson,Performance optimization,Completed
+MNT0086,EQ012,2023-06-05,Preventive,5.2,936.00,John_Smith,Filter replacement,Completed
+MNT0087,EQ012,2023-09-11,Corrective,8.7,2262.00,Maria_Garcia,Component alignment,Completed
+MNT0088,EQ013,2022-02-18,Preventive,4.1,738.00,David_Chen,Belt tension adjustment,Completed
+MNT0089,EQ013,2022-05-26,Preventive,3.6,648.00,Sarah_Johnson,Routine inspection and lubrication,Completed
+MNT0090,EQ013,2022-09-01,Corrective,7.4,1924.00,Mike_Wilson,Seal repair,Completed
+MNT0091,EQ013,2022-12-08,Predictive,1.9,513.00,John_Smith,Oil analysis,Completed
+MNT0092,EQ013,2023-03-17,Preventive,4.7,846.00,Maria_Garcia,Calibration check,Completed
+MNT0093,EQ013,2023-06-23,Corrective,6.8,1768.00,David_Chen,Bearing replacement,Completed
+MNT0094,EQ013,2023-09-29,Preventive,3.4,612.00,Sarah_Johnson,Filter replacement,Completed
+MNT0095,EQ014,2022-03-26,Emergency,22.1,9945.00,Mike_Wilson,Emergency shutdown repair,Completed
+MNT0096,EQ014,2022-07-02,Preventive,5.9,1062.00,John_Smith,Routine inspection and lubrication,Completed
+MNT0097,EQ014,2022-10-08,Corrective,10.7,2782.00,Maria_Garcia,Wiring repair,Completed
+MNT0098,EQ014,2023-01-14,Preventive,4.3,774.00,David_Chen,Filter replacement,Completed
+MNT0099,EQ014,2023-04-22,Predictive,3.1,837.00,Sarah_Johnson,Vibration analysis,Completed
+MNT0100,EQ014,2023-07-29,Preventive,5.6,1008.00,Mike_Wilson,Belt tension adjustment,Completed
+MNT0101,EQ015,2022-02-12,Preventive,2.8,504.00,John_Smith,Calibration check,Completed
+MNT0102,EQ015,2022-05-20,Preventive,3.9,702.00,Maria_Garcia,Routine inspection and lubrication,Completed
+MNT0103,EQ015,2022-08-26,Corrective,5.7,1482.00,David_Chen,Component alignment,Completed
+MNT0104,EQ015,2022-12-02,Predictive,2.2,594.00,Sarah_Johnson,Thermal imaging inspection,Completed
+MNT0105,EQ015,2023-03-11,Preventive,4.4,792.00,Mike_Wilson,Filter replacement,Completed
+MNT0106,EQ015,2023-06-17,Corrective,6.9,1794.00,John_Smith,Seal repair,Completed
+MNT0107,EQ015,2023-09-24,Preventive,3.2,576.00,Maria_Garcia,Belt tension adjustment,Completed

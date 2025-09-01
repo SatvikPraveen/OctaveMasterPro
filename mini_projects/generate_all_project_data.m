@@ -1,0 +1,332 @@
+% Location: mini_projects/generate_all_project_data.m
+% Master script to generate all data for mini projects
+
+function generate_all_project_data()
+    % Generate all data files for the four mini projects
+    
+    fprintf('====================================================\n');
+    fprintf('    GENERATING ALL MINI PROJECT DATA FILES         \n');
+    fprintf('====================================================\n\n');
+    
+    start_time = tic;
+    
+    try
+        % 1. Signal Processing Data
+        fprintf('1. SIGNAL PROCESSING SIMULATION DATA\n');
+        fprintf('====================================\n');
+        signal_data_path = fullfile('signal_processing_simulation', 'data');
+        
+        if ~exist(signal_data_path, 'dir')
+            mkdir(signal_data_path);
+        end
+        
+        % Copy generation script to data directory
+        copyfile('signal_processing_simulation/data/generate_sample_signals.m', signal_data_path);
+        
+        % Change to data directory and run generation
+        current_dir = pwd;
+        cd(signal_data_path);
+        
+        try
+            generate_sample_signals();
+            fprintf('✓ Signal processing data generated successfully\n\n');
+        catch err
+            fprintf('✗ Error generating signal data: %s\n\n', err.message);
+        end
+        
+        cd(current_dir);
+        
+        % 2. Stock Market Data
+        fprintf('2. STOCK MARKET ANALYSIS DATA\n');
+        fprintf('=============================\n');
+        stock_data_path = fullfile('stock_market_analysis', 'sample_data');
+        
+        if ~exist(stock_data_path, 'dir')
+            mkdir(stock_data_path);
+        end
+        
+        % Copy generation script
+        copyfile('stock_market_analysis/sample_data/generate_stock_data.m', stock_data_path);
+        
+        cd(stock_data_path);
+        
+        try
+            generate_stock_data();
+            fprintf('✓ Stock market data generated successfully\n\n');
+        catch err
+            fprintf('✗ Error generating stock data: %s\n\n', err.message);
+        end
+        
+        cd(current_dir);
+        
+        % 3. Image Processing Test Images
+        fprintf('3. IMAGE PROCESSING TEST IMAGES\n');
+        fprintf('===============================\n');
+        image_data_path = fullfile('image_processing_basics', 'sample_images');
+        
+        if ~exist(image_data_path, 'dir')
+            mkdir(image_data_path);
+        end
+        
+        % Copy generation script
+        copyfile('image_processing_basics/sample_images/generate_test_images.m', image_data_path);
+        
+        cd(image_data_path);
+        
+        try
+            generate_test_images();
+            fprintf('✓ Test images generated successfully\n\n');
+        catch err
+            fprintf('✗ Error generating test images: %s\n\n', err.message);
+        end
+        
+        cd(current_dir);
+        
+        % 4. Parallel Processing Batch Images
+        fprintf('4. PARALLEL PROCESSING BATCH IMAGES\n');
+        fprintf('===================================\n');
+        batch_data_path = fullfile('parallel_image_batch_processing', 'input_images');
+        
+        if ~exist(batch_data_path, 'dir')
+            mkdir(batch_data_path);
+        end
+        
+        % Copy generation script
+        copyfile('parallel_image_batch_processing/input_images/generate_batch_images.m', batch_data_path);
+        
+        cd(batch_data_path);
+        
+        try
+            generate_batch_images();
+            create_image_info_file('.');
+            fprintf('✓ Batch images generated successfully\n\n');
+        catch err
+            fprintf('✗ Error generating batch images: %s\n\n', err.message);
+        end
+        
+        cd(current_dir);
+        
+        % 5. Create output directories
+        fprintf('5. CREATING OUTPUT DIRECTORIES\n');
+        fprintf('==============================\n');
+        
+        output_dirs = {
+            fullfile('signal_processing_simulation', 'results');
+            fullfile('image_processing_basics', 'processed');
+            fullfile('stock_market_analysis', 'reports');
+            fullfile('parallel_image_batch_processing', 'output_images');
+            fullfile('parallel_image_batch_processing', 'benchmarks');
+        };
+        
+        for i = 1:length(output_dirs)
+            if ~exist(output_dirs{i}, 'dir')
+                mkdir(output_dirs{i});
+                
+                % Create a README in each output directory
+                readme_file = fullfile(output_dirs{i}, 'README.md');
+                fid = fopen(readme_file, 'w');
+                
+                [~, parent_project] = fileparts(fileparts(output_dirs{i}));
+                [~, dir_name] = fileparts(output_dirs{i});
+                
+                fprintf(fid, '# %s Output Directory\n\n', title_case(strrep(dir_name, '_', ' ')));
+                fprintf(fid, 'This directory contains output files generated by the %s project.\n\n', ...
+                       title_case(strrep(parent_project, '_', ' ')));
+                fprintf(fid, 'Files in this directory are automatically created when you run the demonstrations.\n\n');
+                fprintf(fid, '**Note:** This directory may be empty initially. Content is generated during project execution.\n');
+                
+                fclose(fid);
+                
+                fprintf('✓ Created: %s\n', output_dirs{i});
+            else
+                fprintf('✓ Exists: %s\n', output_dirs{i});
+            end
+        end
+        
+        fprintf('\n');
+        
+        % 6. Generate project summary
+        generate_project_data_summary();
+        
+        total_time = toc(start_time);
+        
+        fprintf('====================================================\n');
+        fprintf('    DATA GENERATION COMPLETE!                      \n');
+        fprintf('====================================================\n');
+        fprintf('Total generation time: %.2f seconds\n', total_time);
+        fprintf('\nAll mini project data has been generated successfully!\n');
+        fprintf('You can now run the individual project demonstrations.\n\n');
+        
+        % Display quick start commands
+        fprintf('QUICK START COMMANDS:\n');
+        fprintf('====================\n');
+        fprintf('cd signal_processing_simulation && signal_demo\n');
+        fprintf('cd image_processing_basics && image_demo\n');
+        fprintf('cd stock_market_analysis && market_demo\n');
+        fprintf('cd parallel_image_batch_processing && parallel_demo\n\n');
+        
+    catch err
+        fprintf('\n✗ CRITICAL ERROR in data generation: %s\n', err.message);
+        fprintf('Stack trace:\n');
+        for i = 1:length(err.stack)
+            fprintf('  %s (line %d)\n', err.stack(i).name, err.stack(i).line);
+        end
+        
+        fprintf('\nTip: Make sure you have write permissions in the current directory.\n');
+    end
+end
+
+function generate_project_data_summary()
+    % Generate comprehensive summary of all generated data
+    
+    fprintf('6. GENERATING PROJECT DATA SUMMARY\n');
+    fprintf('==================================\n');
+    
+    summary_file = 'PROJECT_DATA_SUMMARY.md';
+    fid = fopen(summary_file, 'w');
+    
+    fprintf(fid, '# Mini Projects Data Summary\n\n');
+    fprintf(fid, 'Generated: %s\n\n', datestr(now, 'yyyy-mm-dd HH:MM:SS'));
+    
+    fprintf(fid, '## 1. Signal Processing Simulation\n');
+    fprintf(fid, '**Location:** `signal_processing_simulation/data/`\n\n');
+    fprintf(fid, '### Generated Files:\n');
+    fprintf(fid, '- `ecg_sample.mat` - Synthetic ECG signal with noise and artifacts\n');
+    fprintf(fid, '- `speech_sample.mat` - Formant-based synthetic speech signal\n');
+    fprintf(fid, '- `noisy_sine.mat` - Sine waves with various noise types\n');
+    fprintf(fid, '- `chirp_signals.mat` - Linear, logarithmic, and quadratic chirps\n');
+    fprintf(fid, '- `multi_tone.mat` - Multi-frequency composite signals\n');
+    fprintf(fid, '- `biomedical_signals.mat` - EEG and EMG synthetic signals\n');
+    fprintf(fid, '- `generate_sample_signals.m` - Generation script\n\n');
+    
+    fprintf(fid, '### Usage:\n');
+    fprintf(fid, '```matlab\n');
+    fprintf(fid, 'load(''data/ecg_sample.mat'');\n');
+    fprintf(fid, 'plot(signal_data.time, signal_data.signal);\n');
+    fprintf(fid, '```\n\n');
+    
+    fprintf(fid, '## 2. Image Processing Basics\n');
+    fprintf(fid, '**Location:** `image_processing_basics/sample_images/`\n\n');
+    fprintf(fid, '### Generated Files:\n');
+    fprintf(fid, '- `lena_synthetic.png/gray.png` - Classic test image (synthetic version)\n');
+    fprintf(fid, '- `geometric_shapes.png` - Circles, rectangles, triangles for shape analysis\n');
+    fprintf(fid, '- `texture_patterns.png/color.png` - Various texture samples\n');
+    fprintf(fid, '- `gaussian_noise.png` - Image with Gaussian noise\n');
+    fprintf(fid, '- `salt_pepper_noise.png` - Salt and pepper noise test\n');
+    fprintf(fid, '- `low_contrast.png` - Low contrast test image\n');
+    fprintf(fid, '- `high_frequency.png` - High frequency patterns\n');
+    fprintf(fid, '- `color_gradient.png` - RGB color test patterns\n');
+    fprintf(fid, '- `binary_shapes.png` - Binary morphology test shapes\n');
+    fprintf(fid, '- `generate_test_images.m` - Generation script\n\n');
+    
+    fprintf(fid, '### Usage:\n');
+    fprintf(fid, '```matlab\n');
+    fprintf(fid, 'img = load_image(''sample_images/lena_synthetic.png'');\n');
+    fprintf(fid, 'imshow(img);\n');
+    fprintf(fid, '```\n\n');
+    
+    fprintf(fid, '## 3. Stock Market Analysis\n');
+    fprintf(fid, '**Location:** `stock_market_analysis/sample_data/`\n\n');
+    fprintf(fid, '### Generated Files:\n');
+    fprintf(fid, '- `AAPL_2020_2023.csv` - Apple stock data (2020-2023)\n');
+    fprintf(fid, '- `GOOGL_2020_2023.csv` - Google stock data\n');
+    fprintf(fid, '- `MSFT_2020_2023.csv` - Microsoft stock data\n');
+    fprintf(fid, '- `TSLA_2020_2023.csv` - Tesla stock data\n');
+    fprintf(fid, '- `SPY_2020_2023.csv` - S&P 500 ETF data\n');
+    fprintf(fid, '- `portfolio_sample.csv` - Multi-asset portfolio data\n');
+    fprintf(fid, '- `market_events.csv` - Major market events timeline\n');
+    fprintf(fid, '- `economic_indicators.csv` - GDP, unemployment, inflation data\n');
+    fprintf(fid, '- `generate_stock_data.m` - Generation script\n\n');
+    
+    fprintf(fid, '### CSV Format:\n');
+    fprintf(fid, '```\n');
+    fprintf(fid, 'Date,Open,High,Low,Close,Volume,Adj_Close\n');
+    fprintf(fid, '2020-01-02,320.35,325.58,318.56,324.87,33911900,324.87\n');
+    fprintf(fid, '```\n\n');
+    
+    fprintf(fid, '### Usage:\n');
+    fprintf(fid, '```matlab\n');
+    fprintf(fid, 'data = load_stock_data(''sample_data/AAPL_2020_2023.csv'');\n');
+    fprintf(fid, 'plot(data.close);\n');
+    fprintf(fid, '```\n\n');
+    
+    fprintf(fid, '## 4. Parallel Image Batch Processing\n');
+    fprintf(fid, '**Location:** `parallel_image_batch_processing/input_images/`\n\n');
+    fprintf(fid, '### Generated Files:\n');
+    fprintf(fid, '- `batch_001.png` to `batch_015.png` - Simple geometric patterns (200×200)\n');
+    fprintf(fid, '- `batch_016.png` to `batch_030.png` - Complex patterns (300×300)\n');
+    fprintf(fid, '- `batch_031.png` to `batch_040.png` - Large images (500-800×500-800)\n');
+    fprintf(fid, '- `batch_041.png` to `batch_050.png` - Noisy images (250×250)\n');
+    fprintf(fid, '- `batch_info.txt` - Detailed description of image categories\n');
+    fprintf(fid, '- `generate_batch_images.m` - Generation script\n\n');
+    
+    fprintf(fid, '### Performance Testing Categories:\n');
+    fprintf(fid, '1. **Simple (001-015):** Fast processing, test parallel overhead\n');
+    fprintf(fid, '2. **Complex (016-030):** Moderate processing, test scalability\n');
+    fprintf(fid, '3. **Large (031-040):** Memory intensive, test memory management\n');
+    fprintf(fid, '4. **Noisy (041-050):** Computationally intensive, test algorithm efficiency\n\n');
+    
+    fprintf(fid, '### Usage:\n');
+    fprintf(fid, '```matlab\n');
+    fprintf(fid, 'results = process_image_batch(''input_images/'', ''output_images/'', @enhance_operation);\n');
+    fprintf(fid, '```\n\n');
+    
+    fprintf(fid, '## Output Directories\n');
+    fprintf(fid, 'The following directories are created automatically and populated during project execution:\n\n');
+    fprintf(fid, '- `signal_processing_simulation/results/` - Generated plots and analysis results\n');
+    fprintf(fid, '- `image_processing_basics/processed/` - Processed images from demonstrations\n');
+    fprintf(fid, '- `stock_market_analysis/reports/` - Analysis reports and visualizations\n');
+    fprintf(fid, '- `parallel_image_batch_processing/output_images/` - Batch processing results\n');
+    fprintf(fid, '- `parallel_image_batch_processing/benchmarks/` - Performance benchmark data\n\n');
+    
+    fprintf(fid, '## Data Characteristics\n');
+    fprintf(fid, '### Signal Data:\n');
+    fprintf(fid, '- Sampling rates: 256 Hz to 8 kHz\n');
+    fprintf(fid, '- Duration: 1-10 seconds\n');
+    fprintf(fid, '- Realistic noise models and artifacts\n');
+    fprintf(fid, '- Multiple signal types for comprehensive testing\n\n');
+    
+    fprintf(fid, '### Image Data:\n');
+    fprintf(fid, '- Sizes: 200×200 to 800×800 pixels\n');
+    fprintf(fid, '- Formats: PNG (lossless)\n');
+    fprintf(fid, '- Both RGB and grayscale versions\n');
+    fprintf(fid, '- Various complexity levels for performance testing\n\n');
+    
+    fprintf(fid, '### Stock Data:\n');
+    fprintf(fid, '- 4 years of daily data (2020-2023)\n');
+    fprintf(fid, '- Realistic price movements using geometric Brownian motion\n');
+    fprintf(fid, '- Market events and regime changes included\n');
+    fprintf(fid, '- Proper OHLC relationships and volume patterns\n\n');
+    
+    fprintf(fid, '## Regenerating Data\n');
+    fprintf(fid, 'To regenerate all data files:\n\n');
+    fprintf(fid, '```matlab\n');
+    fprintf(fid, 'generate_all_project_data()\n');
+    fprintf(fid, '```\n\n');
+    fprintf(fid, 'To regenerate specific project data, run the individual generation scripts in each project''s data directory.\n\n');
+    
+    fprintf(fid, '---\n');
+    fprintf(fid, '*This file was automatically generated by `generate_all_project_data.m`*\n');
+    
+    fclose(fid);
+    
+    fprintf('✓ Created: PROJECT_DATA_SUMMARY.md\n');
+end
+
+function title_str = title_case(str)
+    % Convert string to title case
+    words = strsplit(str, ' ');
+    title_str = '';
+    
+    for i = 1:length(words)
+        word = words{i};
+        if ~isempty(word)
+            title_word = [upper(word(1)), lower(word(2:end))];
+            if i == 1
+                title_str = title_word;
+            else
+                title_str = [title_str, ' ', title_word];
+            end
+        end
+    end
+end
