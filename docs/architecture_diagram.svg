@@ -1,0 +1,251 @@
+<!-- File location: OctaveMasterPro/docs/architecture_diagram.svg -->
+
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="moduleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dataGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="projectGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DC2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#F8FAFC"/>
+  
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" fill="#1E293B" font-size="28" font-weight="bold" font-family="Arial, sans-serif">OctaveMasterPro Architecture</text>
+  <text x="600" y="65" text-anchor="middle" fill="#64748B" font-size="16" font-family="Arial, sans-serif">Comprehensive GNU Octave Learning Platform</text>
+  
+  <!-- Core Learning Modules (Left Side) -->
+  <g id="learning-modules">
+    <rect x="50" y="100" width="300" height="600" rx="15" fill="url(#moduleGradient)" filter="url(#shadow)" opacity="0.9"/>
+    <text x="200" y="130" text-anchor="middle" fill="white" font-size="18" font-weight="bold" font-family="Arial, sans-serif">Learning Modules</text>
+    
+    <!-- Sequential modules -->
+    <rect x="70" y="150" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="168" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">00. Environment Check</text>
+    
+    <rect x="70" y="180" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="198" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">01. Basics Introduction</text>
+    
+    <rect x="70" y="210" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="228" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">02. Vectors & Matrices</text>
+    
+    <rect x="70" y="240" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="258" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">03. Indexing & Logic</text>
+    
+    <rect x="70" y="270" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="288" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">04. Scripts & Functions</text>
+    
+    <rect x="70" y="300" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="318" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">05. Data Handling & Files</text>
+    
+    <rect x="70" y="330" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="348" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">06. Plotting 2D & 3D</text>
+    
+    <rect x="70" y="360" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="378" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">07. Linear Algebra</text>
+    
+    <rect x="70" y="390" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="408" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">08. Statistics & Analysis</text>
+    
+    <rect x="70" y="420" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="438" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">09. Optimization & Roots</text>
+    
+    <rect x="70" y="450" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="468" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">10. Advanced Programming</text>
+    
+    <rect x="70" y="480" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="498" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">11. Expert Topics</text>
+    
+    <rect x="70" y="510" width="260" height="25" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="200" y="528" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">12. Parallel Computing</text>
+    
+    <!-- Utils connection -->
+    <rect x="70" y="560" width="260" height="40" rx="5" fill="rgba(255,255,255,0.15)"/>
+    <text x="200" y="578" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Shared Utils</text>
+    <text x="200" y="593" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">plot_utils.m • data_loader.m • parallel_wrappers.m</text>
+  </g>
+  
+  <!-- Datasets (Center) -->
+  <g id="datasets">
+    <rect x="450" y="100" width="300" height="300" rx="15" fill="url(#dataGradient)" filter="url(#shadow)" opacity="0.9"/>
+    <text x="600" y="130" text-anchor="middle" fill="white" font-size="18" font-weight="bold" font-family="Arial, sans-serif">Datasets</text>
+    
+    <!-- CSV Files -->
+    <rect x="470" y="150" width="120" height="80" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="530" y="170" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">CSV Files</text>
+    <text x="530" y="185" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• data1.csv</text>
+    <text x="530" y="200" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• sales_data.csv</text>
+    <text x="530" y="215" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• stock_prices.csv</text>
+    
+    <!-- MAT Files -->
+    <rect x="610" y="150" width="120" height="80" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="670" y="170" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">MAT Files</text>
+    <text x="670" y="185" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• sensor_data.mat</text>
+    <text x="670" y="200" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• signal_analysis.mat</text>
+    <text x="670" y="215" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• optimization_data.mat</text>
+    
+    <!-- Images -->
+    <rect x="470" y="250" width="120" height="80" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="530" y="270" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Images</text>
+    <text x="530" y="285" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Sample images</text>
+    <text x="530" y="300" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Medical scans</text>
+    <text x="530" y="315" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Batch processing</text>
+    
+    <!-- Signals -->
+    <rect x="610" y="250" width="120" height="80" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="670" y="270" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Signals</text>
+    <text x="670" y="285" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Audio files (WAV)</text>
+    <text x="670" y="300" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Raw sensor data</text>
+    <text x="670" y="315" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Synthetic signals</text>
+  </g>
+  
+  <!-- Projects (Right Side) -->
+  <g id="projects">
+    <rect x="850" y="100" width="300" height="300" rx="15" fill="url(#projectGradient)" filter="url(#shadow)" opacity="0.9"/>
+    <text x="1000" y="130" text-anchor="middle" fill="white" font-size="18" font-weight="bold" font-family="Arial, sans-serif">Projects</text>
+    
+    <!-- Mini Projects -->
+    <rect x="870" y="150" width="260" height="100" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="1000" y="170" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Mini Projects</text>
+    <text x="1000" y="190" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Signal Processing Simulation</text>
+    <text x="1000" y="205" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Image Processing Basics</text>
+    <text x="1000" y="220" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Stock Market Analysis</text>
+    <text x="1000" y="235" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Parallel Image Batch Processing</text>
+    
+    <!-- Flagship Project -->
+    <rect x="870" y="270" width="260" height="80" rx="5" fill="rgba(255,255,255,0.15)"/>
+    <text x="1000" y="295" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="Arial, sans-serif">Flagship Project</text>
+    <text x="1000" y="315" text-anchor="middle" fill="white" font-size="11" font-family="Arial, sans-serif">End-to-End Data Pipeline</text>
+    <text x="1000" y="330" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">Portfolio Showcase</text>
+  </g>
+  
+  <!-- Development Environment (Bottom) -->
+  <g id="environment">
+    <rect x="50" y="450" width="1100" height="150" rx="15" fill="#334155" filter="url(#shadow)" opacity="0.9"/>
+    <text x="600" y="480" text-anchor="middle" fill="white" font-size="18" font-weight="bold" font-family="Arial, sans-serif">Development Environment</text>
+    
+    <!-- Docker -->
+    <rect x="80" y="500" width="150" height="80" rx="5" fill="#2563EB"/>
+    <text x="155" y="525" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Docker</text>
+    <text x="155" y="545" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Containerized</text>
+    <text x="155" y="560" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Reproducible</text>
+    <text x="155" y="575" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Cross-platform</text>
+    
+    <!-- Octave -->
+    <rect x="250" y="500" width="150" height="80" rx="5" fill="#0891B2"/>
+    <text x="325" y="525" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">GNU Octave</text>
+    <text x="325" y="545" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Core engine</text>
+    <text x="325" y="560" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• All packages</text>
+    <text x="325" y="575" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Parallel support</text>
+    
+    <!-- Jupyter -->
+    <rect x="420" y="500" width="150" height="80" rx="5" fill="#F59E0B"/>
+    <text x="495" y="525" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Jupyter Lab</text>
+    <text x="495" y="545" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Interactive</text>
+    <text x="495" y="560" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Octave kernel</text>
+    <text x="495" y="575" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Live plotting</text>
+    
+    <!-- Version Control -->
+    <rect x="590" y="500" width="150" height="80" rx="5" fill="#7C2D12"/>
+    <text x="665" y="525" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Version Control</text>
+    <text x="665" y="545" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Git integration</text>
+    <text x="665" y="560" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Pre-commit hooks</text>
+    <text x="665" y="575" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Code quality</text>
+    
+    <!-- Documentation -->
+    <rect x="760" y="500" width="150" height="80" rx="5" fill="#059669"/>
+    <text x="835" y="525" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Documentation</text>
+    <text x="835" y="545" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Cheatsheets</text>
+    <text x="835" y="560" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Setup guides</text>
+    <text x="835" y="575" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Troubleshooting</text>
+    
+    <!-- Performance -->
+    <rect x="930" y="500" width="150" height="80" rx="5" fill="#7C2D92"/>
+    <text x="1005" y="525" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Performance</text>
+    <text x="1005" y="545" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Vectorization</text>
+    <text x="1005" y="560" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Parallel computing</text>
+    <text x="1005" y="575" text-anchor="middle" fill="white" font-size="10" font-family="Arial, sans-serif">• Optimization</text>
+  </g>
+  
+  <!-- Quick References -->
+  <g id="quick-refs">
+    <rect x="450" y="450" width="300" height="150" rx="15" fill="#475569" filter="url(#shadow)" opacity="0.9"/>
+    <text x="600" y="480" text-anchor="middle" fill="white" font-size="16" font-weight="bold" font-family="Arial, sans-serif">Quick References</text>
+    
+    <rect x="470" y="500" width="120" height="80" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="530" y="520" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="Arial, sans-serif">Cheatsheets</text>
+    <text x="530" y="540" text-anchor="middle" fill="white" font-size="9" font-family="Arial, sans-serif">• Syntax reference</text>
+    <text x="530" y="555" text-anchor="middle" fill="white" font-size="9" font-family="Arial, sans-serif">• Plotting guide</text>
+    <text x="530" y="570" text-anchor="middle" fill="white" font-size="9" font-family="Arial, sans-serif">• Linear algebra</text>
+    
+    <rect x="610" y="500" width="120" height="80" rx="5" fill="rgba(255,255,255,0.2)"/>
+    <text x="670" y="520" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="Arial, sans-serif">Examples</text>
+    <text x="670" y="540" text-anchor="middle" fill="white" font-size="9" font-family="Arial, sans-serif">• Code snippets</text>
+    <text x="670" y="555" text-anchor="middle" fill="white" font-size="9" font-family="Arial, sans-serif">• Common patterns</text>
+    <text x="670" y="570" text-anchor="middle" fill="white" font-size="9" font-family="Arial, sans-serif">• Best practices</text>
+  </g>
+  
+  <!-- Data Flow Arrows -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+  </defs>
+  
+  <!-- Modules to Datasets -->
+  <line x1="350" y1="250" x2="450" y2="250" stroke="#64748B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="400" y="245" text-anchor="middle" fill="#64748B" font-size="10" font-family="Arial, sans-serif">loads</text>
+  
+  <!-- Datasets to Projects -->
+  <line x1="750" y1="250" x2="850" y2="250" stroke="#64748B" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="800" y="245" text-anchor="middle" fill="#64748B" font-size="10" font-family="Arial, sans-serif">feeds</text>
+  
+  <!-- Modules to Environment -->
+  <line x1="200" y1="700" x2="200" y2="600" stroke="#64748B" stroke-width="2" marker-end="url(#arrowhead)" transform="rotate(180 200 650)"/>
+  <text x="220" y="655" fill="#64748B" font-size="10" font-family="Arial, sans-serif">runs on</text>
+  
+  <!-- Environment supports all -->
+  <line x1="600" y1="450" x2="600" y2="400" stroke="#64748B" stroke-width="2" marker-end="url(#arrowhead)" transform="rotate(180 600 425)"/>
+  <text x="620" y="430" fill="#64748B" font-size="10" font-family="Arial, sans-serif">supports</text>
+  
+  <!-- Learning Path Flow -->
+  <g id="learning-path">
+    <text x="600" y="650" text-anchor="middle" fill="#1E293B" font-size="16" font-weight="bold" font-family="Arial, sans-serif">Learning Progression</text>
+    
+    <!-- Progress arrows -->
+    <line x1="100" y1="670" x2="300" y2="670" stroke="#4F46E5" stroke-width="4" marker-end="url(#arrowhead)"/>
+    <text x="200" y="685" text-anchor="middle" fill="#4F46E5" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Sequential Modules</text>
+    
+    <line x1="400" y1="670" x2="600" y2="670" stroke="#059669" stroke-width="4" marker-end="url(#arrowhead)"/>
+    <text x="500" y="685" text-anchor="middle" fill="#059669" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Apply to Data</text>
+    
+    <line x1="700" y1="670" x2="900" y2="670" stroke="#DC2626" stroke-width="4" marker-end="url(#arrowhead)"/>
+    <text x="800" y="685" text-anchor="middle" fill="#DC2626" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Build Projects</text>
+    
+    <line x1="1000" y1="670" x2="1100" y2="670" stroke="#7C2D12" stroke-width="4" marker-end="url(#arrowhead)"/>
+    <text x="1050" y="685" text-anchor="middle" fill="#7C2D12" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Master</text>
+  </g>
+  
+  <!-- Legend -->
+  <g id="legend">
+    <rect x="50" y="720" width="500" height="60" rx="5" fill="rgba(255,255,255,0.9)" stroke="#E2E8F0"/>
+    <text x="70" y="740" fill="#1E293B" font-size="12" font-weight="bold" font-family="Arial, sans-serif">Key Components:</text>
+    <text x="70" y="755" fill="#4F46E5" font-size="10" font-family="Arial, sans-serif">■ Learning Modules (Sequential)</text>
+    <text x="220" y="755" fill="#059669" font-size="10" font-family="Arial, sans-serif">■ Datasets (Realistic)</text>
+    <text x="340" y="755" fill="#DC2626" font-size="10" font-family="Arial, sans-serif">■ Projects (Applied)</text>
+    <text x="450" y="755" fill="#334155" font-size="10" font-family="Arial, sans-serif">■ Environment (Docker)</text>
+    <text x="70" y="770" fill="#64748B" font-size="9" font-family="Arial, sans-serif">Total: 13 notebooks • 5 datasets • 4 mini projects • 1 flagship • Complete Docker environment</text>
+  </g>
+</svg>

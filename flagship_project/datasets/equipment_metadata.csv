@@ -1,0 +1,16 @@
+Equipment_ID,Equipment_Type,Manufacturer,Model,Installation_Date,Location,Power_Rating_kW,Operational_Hours,Criticality
+EQ001,Compressor,Siemens,Siemens_Compressor_577,2023-07-01,Plant_A,164.6,3019,High
+EQ002,Pump,Siemens,Siemens_Pump_613,2019-11-22,Plant_A,63.0,27801,Low
+EQ003,Motor,Siemens,Siemens_Motor_464,2018-10-31,Plant_A,122.8,28457,High
+EQ004,Generator,ABB,ABB_Generator_620,2018-12-24,Plant_A,297.0,36810,Low
+EQ005,Conveyor,ABB,ABB_Conveyor_789,2020-03-15,Plant_A,18.5,25920,Medium
+EQ006,Compressor,ABB,ABB_Compressor_445,2021-08-12,Plant_B,189.2,16588,High
+EQ007,Pump,GE,GE_Pump_332,2019-05-18,Plant_B,45.8,31245,Medium
+EQ008,Motor,GE,GE_Motor_198,2022-01-09,Plant_B,95.4,14760,High
+EQ009,Generator,GE,GE_Generator_876,2020-11-03,Plant_B,425.7,23856,Critical
+EQ010,Conveyor,Schneider,Schneider_Conveyor_654,2018-07-20,Plant_B,22.3,39420,Low
+EQ011,Compressor,Schneider,Schneider_Compressor_321,2021-12-05,Plant_C,201.8,15336,Medium
+EQ012,Pump,Schneider,Schneider_Pump_987,2019-02-14,Plant_C,52.1,34128,High
+EQ013,Motor,Rockwell,Rockwell_Motor_543,2020-09-28,Plant_C,108.7,24792,Medium
+EQ014,Generator,Rockwell,Rockwell_Generator_210,2022-06-11,Warehouse,368.9,11664,High
+EQ015,Conveyor,Rockwell,Rockwell_Conveyor_765,2018-04-07,Production_Floor,15.8,41904,Low
