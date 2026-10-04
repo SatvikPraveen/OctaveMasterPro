@@ -1,5 +1,7 @@
 % File location: OctaveMasterPro/utils/plot_utils.m
 % Comprehensive plotting utilities for OctaveMasterPro
+% Note: save_publication_figure lives in its own file in utils/ so it can be
+% called from other code (subfunctions of this file are only visible inside it).
 
 function plot_utils()
     % Utility collection for enhanced plotting in Octave
@@ -125,37 +127,6 @@ function multi_subplot(data_cell, layout, titles)
     
     % Adjust spacing
     set(gcf, 'Position', [100, 100, 800, 600]);
-end
-
-function save_publication_figure(filename, varargin)
-    % Save high-quality figures for publications
-    % Usage: save_publication_figure('my_plot', 'Format', 'both', 'DPI', 300)
-    
-    p = inputParser;
-    addParameter(p, 'Format', 'png'); % 'png', 'pdf', 'eps', 'both'
-    addParameter(p, 'DPI', 300);
-    addParameter(p, 'Size', [8, 6]); % inches
-    parse(p, varargin{:});
-    
-    % Set figure properties
-    set(gcf, 'PaperUnits', 'inches');
-    set(gcf, 'PaperSize', p.Results.Size);
-    set(gcf, 'PaperPosition', [0, 0, p.Results.Size]);
-    
-    % Save in requested formats
-    if strcmp(p.Results.Format, 'png') || strcmp(p.Results.Format, 'both')
-        print('-dpng', sprintf('-r%d', p.Results.DPI), [filename '.png']);
-    end
-    
-    if strcmp(p.Results.Format, 'pdf') || strcmp(p.Results.Format, 'both')
-        print('-dpdf', [filename '.pdf']);
-    end
-    
-    if strcmp(p.Results.Format, 'eps')
-        print('-deps2', [filename '.eps']);
-    end
-    
-    fprintf('Figure saved as: %s\n', filename);
 end
 
 function plot_histogram_with_stats(data, varargin)

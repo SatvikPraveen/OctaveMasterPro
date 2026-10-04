@@ -1,5 +1,9 @@
 % File location: OctaveMasterPro/utils/parallel_wrappers.m
 % Parallel processing utilities and wrappers for OctaveMasterPro
+% Note: check_parallel_capability, get_optimal_workers, parallel_statistics,
+% parallel_monte_carlo, parallel_fft_analysis and parallel_cross_validation
+% live in their own files in utils/ so they can be called from other code
+% (subfunctions of this file are only visible inside it).
 
 function parallel_wrappers()
     % Parallel processing utility collection for OctaveMasterPro
@@ -40,86 +44,6 @@ function parallel_wrappers_help()
     fprintf('  parallel_progress_bar(total)      - Progress tracking for parallel jobs\n\n');
 end
 
-function is_available = check_parallel_capability()
-    % Check if parallel processing is available and functional
-    % Usage: is_available = check_parallel_capability()
-    
-    fprintf('Checking parallel processing capability...\n');
-    
-    % Check if parallel package is installed
-    pkg_list = pkg('list');
-    parallel_installed = false;
-    
-    for i = 1:length(pkg_list)
-        if strcmp(pkg_list{i}.name, 'parallel')
-            parallel_installed = true;
-            if pkg_list{i}.loaded
-                fprintf('  ✓ Parallel package loaded\n');
-            else
-                fprintf('  ! Parallel package installed but not loaded\n');
-                pkg load parallel;
-                fprintf('  ✓ Parallel package now loaded\n');
-            end
-            break;
-        end
-    end
-    
-    if ~parallel_installed
-        fprintf('  ✗ Parallel package not installed\n');
-        fprintf('  Install with: pkg install -forge parallel\n');
-        is_available = false;
-        return;
-    end
-    
-    % Test basic parallel functionality
-    try
-        % Simple test with parfor (if available)
-        test_data = 1:100;
-        result = zeros(size(test_data));
-        
-        % Try parallel execution
-        if exist('parfor', 'builtin')
-            tic;
-            parfor i = 1:length(test_data)
-                result(i) = test_data(i)^2;
-            end
-            parallel_time = toc;
-            
-            fprintf('  ✓ parfor functionality working (%.4f seconds)\n', parallel_time);
-        else
-            fprintf('  ! parfor not available, using alternative parallel methods\n');
-        end
-        
-        % Test system resources
-        if exist('nproc', 'builtin')
-            n_cores = nproc();
-        else
-            n_cores = 4; % Default assumption
-        end
-        
-        fprintf('  ✓ Detected %d CPU cores\n', n_cores);
-        
-        is_available = true;
-        
-    catch ME
-        fprintf('  ✗ Parallel functionality test failed: %s\n', ME.message);
-        is_available = false;
-    end
-    
-    % Memory check
-    try
-        memory_info = memory();
-        available_memory = memory_info.MemAvailableAllArrays / 1e9;
-        fprintf('  ✓ Available memory: %.1f GB\n', available_memory);
-        
-        if available_memory < 1
-            fprintf('  ! Warning: Low memory may limit parallel processing\n');
-        end
-    catch
-        fprintf('  ! Could not determine available memory\n');
-    end
-end
-
 function pool_size = setup_parallel_pool(n_workers)
     % Initialize parallel worker pool
     % Usage: pool_size = setup_parallel_pool(4) % Request 4 workers
@@ -148,52 +72,6 @@ function pool_size = setup_parallel_pool(n_workers)
         fprintf('  Falling back to serial execution\n');
         pool_size = 1;
     end
-end
-
-function optimal_workers = get_optimal_workers()
-    % Determine optimal number of workers based on system resources
-    % Usage: n_workers = get_optimal_workers()
-    
-    try
-        % Try to get actual CPU count
-        if exist('nproc', 'builtin')
-            n_cores = nproc();
-        else
-            % Fallback method
-            if isunix()
-                [status, result] = system('nproc');
-                if status == 0
-                    n_cores = str2double(strtrim(result));
-                else
-                    n_cores = 4; % Conservative default
-                end
-            else
-                n_cores = 4; % Windows/other default
-            end
-        end
-        
-        % Use cores - 1 to leave one for system
-        optimal_workers = max(1, n_cores - 1);
-        
-        % Check memory constraints
-        try
-            memory_info = memory();
-            available_memory_gb = memory_info.MemAvailableAllArrays / 1e9;
-            
-            % Limit workers based on memory (assume 0.5GB per worker minimum)
-            memory_limited_workers = floor(available_memory_gb / 0.5);
-            optimal_workers = min(optimal_workers, memory_limited_workers);
-        catch
-            % If memory info unavailable, be conservative
-            optimal_workers = min(optimal_workers, 4);
-        end
-        
-    catch
-        optimal_workers = 2; % Very conservative fallback
-    end
-    
-    optimal_workers = max(1, optimal_workers); % At least 1 worker
-    fprintf('Optimal workers for this system: %d\n', optimal_workers);
 end
 
 function [results, timing] = benchmark_parallel_vs_serial(func, test_data, n_iterations)
@@ -345,105 +223,6 @@ function results = parallel_image_batch(image_dir, processing_func)
     results = result_struct;
 end
 
-function results = parallel_statistics(data, stat_functions)
-    % Compute multiple statistics in parallel
-    % Usage: results = parallel_statistics(data_matrix, {@mean, @std, @median})
-    
-    n_functions = length(stat_functions);
-    fprintf('Computing %d statistics in parallel...\n', n_functions);
-    
-    results = cell(n_functions, 1);
-    
-    % Execute statistics functions
-    tic;
-    if check_parallel_capability() && n_functions > 1
-        % Parallel execution
-        for i = 1:n_functions
-            results{i} = stat_functions{i}(data);
-        end
-    else
-        % Serial execution
-        for i = 1:n_functions
-            results{i} = stat_functions{i}(data);
-        end
-    end
-    computation_time = toc;
-    
-    fprintf('Statistics computed in %.4f seconds\n', computation_time);
-    
-    % Package results with function names
-    result_struct = struct();
-    for i = 1:n_functions
-        func_name = func2str(stat_functions{i});
-        result_struct.(func_name) = results{i};
-    end
-    
-    results = result_struct;
-end
-
-function results = parallel_monte_carlo(simulation_func, n_simulations, chunk_size)
-    % Run Monte Carlo simulations in parallel
-    % Usage: results = parallel_monte_carlo(@my_simulation, 10000, 1000)
-    
-    if nargin < 3
-        chunk_size = ceil(n_simulations / get_optimal_workers());
-    end
-    
-    fprintf('Running %d Monte Carlo simulations in parallel...\n', n_simulations);
-    
-    % Split simulations into chunks
-    n_chunks = ceil(n_simulations / chunk_size);
-    chunk_results = cell(n_chunks, 1);
-    
-    tic;
-    if check_parallel_capability()
-        % Parallel execution of chunks
-        for chunk = 1:n_chunks
-            chunk_start = (chunk - 1) * chunk_size + 1;
-            chunk_end = min(chunk * chunk_size, n_simulations);
-            current_chunk_size = chunk_end - chunk_start + 1;
-            
-            % Run simulations for this chunk
-            chunk_data = zeros(1, current_chunk_size);
-            for sim = 1:current_chunk_size
-                chunk_data(sim) = simulation_func();
-            end
-            chunk_results{chunk} = chunk_data;
-        end
-        
-    else
-        % Serial execution
-        all_results = zeros(1, n_simulations);
-        for sim = 1:n_simulations
-            all_results(sim) = simulation_func();
-        end
-        chunk_results{1} = all_results;
-    end
-    
-    simulation_time = toc;
-    
-    % Combine results
-    results = [];
-    for chunk = 1:length(chunk_results)
-        results = [results, chunk_results{chunk}];
-    end
-    
-    fprintf('Monte Carlo completed: %d simulations in %.2f seconds\n', ...
-            length(results), simulation_time);
-    
-    % Compute statistics
-    result_stats = struct();
-    result_stats.data = results;
-    result_stats.mean = mean(results);
-    result_stats.std = std(results);
-    result_stats.min = min(results);
-    result_stats.max = max(results);
-    result_stats.n_simulations = n_simulations;
-    result_stats.execution_time = simulation_time;
-    
-    results = result_stats;
-end
-
 function results = parallel_filter_bank(signal, filter_bank)
     % Apply multiple filters to signal in parallel
     % Usage: results = parallel_filter_bank(signal, {filter1, filter2, filter3})
@@ -489,123 +268,6 @@ function results = parallel_filter_bank(signal, filter_bank)
     result_struct.processing_time = filter_time;
     
     results = result_struct;
-end
-
-function results = parallel_fft_analysis(signals)
-    % Parallel FFT analysis of multiple signals
-    % Usage: results = parallel_fft_analysis({signal1, signal2, signal3})
-    
-    if ~iscell(signals)
-        error('Input must be cell array of signals');
-    end
-    
-    n_signals = length(signals);
-    fprintf('Computing FFT for %d signals in parallel...\n', n_signals);
-    
-    results = cell(n_signals, 1);
-    
-    tic;
-    if check_parallel_capability() && n_signals > 1
-        % Parallel FFT computation
-        for i = 1:n_signals
-            fft_result = fft(signals{i});
-            
-            % Package FFT results with metadata
-            result_data = struct();
-            result_data.fft_data = fft_result;
-            result_data.magnitude = abs(fft_result);
-            result_data.phase = angle(fft_result);
-            result_data.power = abs(fft_result).^2;
-            result_data.signal_length = length(signals{i});
-            
-            results{i} = result_data;
-        end
-    else
-        % Serial execution
-        for i = 1:n_signals
-            fft_result = fft(signals{i});
-            
-            result_data = struct();
-            result_data.fft_data = fft_result;
-            result_data.magnitude = abs(fft_result);
-            result_data.phase = angle(fft_result);
-            result_data.power = abs(fft_result).^2;
-            result_data.signal_length = length(signals{i});
-            
-            results{i} = result_data;
-        end
-    end
-    
-    fft_time = toc;
-    fprintf('FFT analysis completed in %.4f seconds\n', fft_time);
-end
-
-function results = parallel_cross_validation(model_func, data, k_folds)
-    % Parallel k-fold cross-validation
-    % Usage: results = parallel_cross_validation(@my_model, data, 10)
-    
-    if nargin < 3
-        k_folds = 10;
-    end
-    
-    fprintf('Running %d-fold cross-validation in parallel...\n', k_folds);
-    
-    % Split data into folds
-    n_samples = size(data, 1);
-    fold_size = floor(n_samples / k_folds);
-    fold_results = cell(k_folds, 1);
-    
-    tic;
-    if check_parallel_capability() && k_folds > 2
-        % Parallel cross-validation
-        for fold = 1:k_folds
-            % Create training and test sets
-            test_start = (fold - 1) * fold_size + 1;
-            test_end = min(fold * fold_size, n_samples);
-            
-            test_indices = test_start:test_end;
-            train_indices = setdiff(1:n_samples, test_indices);
-            
-            train_data = data(train_indices, :);
-            test_data = data(test_indices, :);
-            
-            % Train and evaluate model
-            fold_results{fold} = model_func(train_data, test_data);
-        end
-    else
-        % Serial execution
-        for fold = 1:k_folds
-            test_start = (fold - 1) * fold_size + 1;
-            test_end = min(fold * fold_size, n_samples);
-            
-            test_indices = test_start:test_end;
-            train_indices = setdiff(1:n_samples, test_indices);
-            
-            train_data = data(train_indices, :);
-            test_data = data(test_indices, :);
-            
-            fold_results{fold} = model_func(train_data, test_data);
-        end
-    end
-    
-    cv_time = toc;
-    
-    % Aggregate results
-    if isnumeric(fold_results{1})
-        % Simple numeric results
-        all_scores = cell2mat(fold_results);
-        results.mean_score = mean(all_scores);
-        results.std_score = std(all_scores);
-        results.scores = all_scores;
-    else
-        % Complex results structure
-        results.fold_results = fold_results;
-        results.n_folds = k_folds;
-    end
-    
-    results.execution_time = cv_time;
-    
-    fprintf('Cross-validation completed in %.2f seconds\n', cv_time);
 end
 
 function progress = parallel_progress_bar(current, total, bar_length)
