@@ -8,6 +8,7 @@ function synthetic_data = generate_synthetic_stock_data(varargin)
     initial_price = 100;
     annual_return = 0.08;
     annual_volatility = 0.2;
+    seed = 123;
     
     for i = 1:2:length(varargin)
         switch lower(varargin{i})
@@ -15,13 +16,17 @@ function synthetic_data = generate_synthetic_stock_data(varargin)
             case 'initial_price', initial_price = varargin{i+1};
             case 'return', annual_return = varargin{i+1};
             case 'volatility', annual_volatility = varargin{i+1};
+            case 'seed', seed = varargin{i+1};
         end
     end
     
     daily_return = annual_return / 252;
     daily_volatility = annual_volatility / sqrt(252);
     
-    rand('state', 123); randn('state', 123);
+    % Seed per call so results are reproducible.  Callers generating several
+    % stocks must pass distinct seeds; a fixed seed made every stock share
+    % one return path (correlation 1), invalidating portfolio analysis.
+    rand('state', seed); randn('state', seed);
     returns = daily_return + daily_volatility * randn(num_days, 1);
     
     log_prices = log(initial_price) + cumsum(returns);
