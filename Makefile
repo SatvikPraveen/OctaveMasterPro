@@ -2,13 +2,14 @@
 OCTAVE ?= octave --no-gui --no-window-system --quiet
 EXP     = flagship_project/experiment
 
-.PHONY: help test parse check docs-check experiment experiment-quick audit env package docker clean
+.PHONY: help test parse check docs-check notebooks experiment experiment-quick audit env package docker clean
 
 help:
 	@echo "make test              run the library test suite (inst/+omp)"
 	@echo "make parse             parse-check every tracked .m file"
 	@echo "make check             test + parse"
 	@echo "make docs-check        execute every example in docs/usage_examples.md"
+	@echo "make notebooks         execute all 14 notebooks (needs nbclient + octave_kernel)"
 	@echo "make audit             audit the shipped flagship datasets"
 	@echo "make experiment        full flagship simulation study (~10-20 min)"
 	@echo "make experiment-quick  2-seed smoke run (~1 min) into /tmp"
@@ -23,6 +24,9 @@ parse:
 	$(OCTAVE) --eval "addpath tests; exit (! check_parse ());"
 
 check: test parse
+
+notebooks:
+	python3 tests/check_notebooks.py
 
 docs-check:
 	$(OCTAVE) --eval "addpath docs; exit (! check_usage_examples ());"
