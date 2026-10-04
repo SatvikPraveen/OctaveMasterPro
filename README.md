@@ -3,6 +3,7 @@
 **Verified numerical methods, statistical inference and leakage-aware model evaluation for GNU Octave, with a pre-registered simulation study and a hands-on curriculum.**
 
 [![Octave](https://img.shields.io/badge/GNU%20Octave-%E2%89%A5%206.1%20(tested%208.4)-0790c0)](https://octave.org)
+[![CI](https://github.com/SatvikPraveen/OctaveMasterPro/actions/workflows/ci.yml/badge.svg)](https://github.com/SatvikPraveen/OctaveMasterPro/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/library%20tests-125%20passing-2ea44f)](#verification)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Citation](https://img.shields.io/badge/cite-CITATION.cff-blue)](CITATION.cff)
@@ -211,10 +212,9 @@ over the 40 machines of seed 1.
 | Notebooks | `make notebooks` | all 14 notebooks executed with the Octave kernel; fails on any error output |
 | Experiment smoke test | `make experiment-quick` | 2-seed flagship run; CI asserts that the negative control stays near chance and the oracle above 0.75 |
 
-The CI workflow runs all of the above on Octave 8.4 (Ubuntu 24.04) and
-Octave 6.4 (Ubuntu 22.04). It is versioned at
-[`ci/github-actions-ci.yml`](ci/github-actions-ci.yml). To enable it,
-move it to `.github/workflows/ci.yml`.
+[GitHub Actions](.github/workflows/ci.yml) runs all of the above on every
+push and pull request, on Octave 8.4 (Ubuntu 24.04) and Octave 6.4
+(Ubuntu 22.04).
 
 ---
 
@@ -256,7 +256,7 @@ utils/                shared helpers for notebooks and demos
 datasets/             generators for the sample data used by notebooks
 cheatsheets/          syntax, plotting, linear algebra, parallel computing
 docs/                 setup guide, executed usage examples, troubleshooting
-ci/                   GitHub Actions workflow (move to .github/workflows/ to enable)
+.github/workflows/    CI: tests, parse check, executable docs, notebooks, experiment smoke run
 ```
 
 ---

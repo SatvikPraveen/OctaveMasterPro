@@ -1,13 +1,8 @@
-# GitHub Actions workflow. To enable it:
-#   mkdir -p .github/workflows && git mv ci/github-actions-ci.yml .github/workflows/ci.yml
-# (Pushing files under .github/workflows/ requires a token with the GitHub
-# "workflow" scope, so the workflow is versioned here until it is moved.)
-
 name: CI
 
 on:
   push:
-    branches: [main, "claude/**"]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
