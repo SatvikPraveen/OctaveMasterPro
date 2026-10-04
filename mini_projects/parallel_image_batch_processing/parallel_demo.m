@@ -1,53 +1,101 @@
 % Location: mini_projects/parallel_image_batch_processing/parallel_demo.m
 % Main Parallel Image Processing Demonstration
 
-function parallel_demo()
-    clear; clc; close all;
-    
+function parallel_demo(mode)
+    % Parallel image batch processing demonstration
+    %
+    %   parallel_demo          interactive menu (runs everything when headless)
+    %   parallel_demo('all')   run every section in sequence without prompts
+    %   parallel_demo(k)       run only section k (1-6) without the menu
+
+    if nargin < 1
+        mode = '';
+    end
+    clc; close all;
+
     fprintf('====================================================\n');
     fprintf('    PARALLEL IMAGE BATCH PROCESSING DEMO           \n');
     fprintf('====================================================\n\n');
-    
+
+    section_names = {'Image Operations Demo', ...
+                     'Batch Processing Demo', ...
+                     'Performance Benchmarking', ...
+                     'Memory Usage Analysis', ...
+                     'Complete Parallel Pipeline', ...
+                     'Custom Operation Builder'};
+
+    if isempty(mode) && ~is_interactive_session()
+        fprintf('Non-interactive session detected: running all sections.\n');
+        mode = 'all';
+    end
+
+    if ~isempty(mode)
+        % Non-interactive: run the requested sections without input()
+        if ischar(mode) && strcmpi(mode, 'all')
+            sections = 1:numel(section_names);
+        elseif isnumeric(mode)
+            sections = mode(:)';
+        else
+            error('parallel_demo: MODE must be ''all'' or a section number');
+        end
+        is_interactive_session(false);
+        restore = onCleanup(@() is_interactive_session([]));
+        for k = sections
+            fprintf('\n=== Section %d: %s ===\n', k, section_names{k});
+            try
+                run_section(k);
+            catch err
+                fprintf('Error in section %d (%s): %s\n', k, section_names{k}, err.message);
+            end
+            close all;
+        end
+        fprintf('\nParallel processing demo finished.\n');
+        return;
+    end
+
     try
         while true
             fprintf('\nSelect a demonstration:\n');
-            fprintf('1. Image Operations Demo\n');
-            fprintf('2. Batch Processing Demo\n');
-            fprintf('3. Performance Benchmarking\n');
-            fprintf('4. Memory Usage Analysis\n');
-            fprintf('5. Complete Parallel Pipeline\n');
-            fprintf('6. Custom Operation Builder\n');
+            for k = 1:numel(section_names)
+                fprintf('%d. %s\n', k, section_names{k});
+            end
             fprintf('0. Exit\n');
-            
+
             choice = input('Enter your choice (0-6): ');
-            
-            switch choice
-                case 0
-                    fprintf('\nExiting Parallel Processing Demo. Goodbye!\n');
-                    break;
-                case 1
-                    image_operations_demo();
-                case 2
-                    batch_processing_demo();
-                case 3
-                    benchmarking_demo();
-                case 4
-                    memory_analysis_demo();
-                case 5
-                    complete_pipeline_demo();
-                case 6
-                    custom_operation_demo();
-                otherwise
-                    fprintf('Invalid choice. Please select 0-6.\n');
+
+            if isequal(choice, 0)
+                fprintf('\nExiting Parallel Processing Demo. Goodbye!\n');
+                break;
+            elseif isscalar(choice) && any(choice == 1:numel(section_names))
+                run_section(choice);
+            else
+                fprintf('Invalid choice. Please select 0-6.\n');
             end
-            
-            if choice ~= 0
-                input('\nPress Enter to continue...');
-            end
+
+            input('\nPress Enter to continue...');
         end
-        
+
     catch err
         fprintf('Error in parallel_demo: %s\n', err.message);
+    end
+end
+
+function run_section(k)
+    switch k
+        case 1
+            image_operations_demo();
+        case 2
+            batch_processing_demo();
+        case 3
+            benchmarking_demo();
+        case 4
+            memory_analysis_demo();
+        case 5
+            complete_pipeline_demo();
+        case 6
+            custom_operation_demo();
+        otherwise
+            error('no section %d', k);
     end
 end
 

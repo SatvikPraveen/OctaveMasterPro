@@ -1,53 +1,101 @@
 % Location: mini_projects/stock_market_analysis/market_demo.m
 % Main Stock Market Analysis Demonstration
 
-function market_demo()
-    clear; clc; close all;
-    
+function market_demo(mode)
+    % Stock market analysis demonstration
+    %
+    %   market_demo          interactive menu (runs everything when headless)
+    %   market_demo('all')   run every section in sequence without prompts
+    %   market_demo(k)       run only section k (1-6) without the menu
+
+    if nargin < 1
+        mode = '';
+    end
+    clc; close all;
+
     fprintf('====================================================\n');
     fprintf('      STOCK MARKET ANALYSIS DEMONSTRATION          \n');
     fprintf('====================================================\n\n');
-    
+
+    section_names = {'Data Loading & Preprocessing', ...
+                     'Technical Indicators', ...
+                     'Price & Trend Analysis', ...
+                     'Portfolio Optimization', ...
+                     'Risk Analysis', ...
+                     'Complete Trading Strategy'};
+
+    if isempty(mode) && ~is_interactive_session()
+        fprintf('Non-interactive session detected: running all sections.\n');
+        mode = 'all';
+    end
+
+    if ~isempty(mode)
+        % Non-interactive: run the requested sections without input()
+        if ischar(mode) && strcmpi(mode, 'all')
+            sections = 1:numel(section_names);
+        elseif isnumeric(mode)
+            sections = mode(:)';
+        else
+            error('market_demo: MODE must be ''all'' or a section number');
+        end
+        is_interactive_session(false);
+        restore = onCleanup(@() is_interactive_session([]));
+        for k = sections
+            fprintf('\n=== Section %d: %s ===\n', k, section_names{k});
+            try
+                run_section(k);
+            catch err
+                fprintf('Error in section %d (%s): %s\n', k, section_names{k}, err.message);
+            end
+            close all;
+        end
+        fprintf('\nMarket analysis demo finished.\n');
+        return;
+    end
+
     try
         while true
             fprintf('\nSelect a demonstration:\n');
-            fprintf('1. Data Loading & Preprocessing\n');
-            fprintf('2. Technical Indicators\n');
-            fprintf('3. Price & Trend Analysis\n');
-            fprintf('4. Portfolio Optimization\n');
-            fprintf('5. Risk Analysis\n');
-            fprintf('6. Complete Trading Strategy\n');
+            for k = 1:numel(section_names)
+                fprintf('%d. %s\n', k, section_names{k});
+            end
             fprintf('0. Exit\n');
-            
+
             choice = input('Enter your choice (0-6): ');
-            
-            switch choice
-                case 0
-                    fprintf('\nExiting Market Analysis Demo. Goodbye!\n');
-                    break;
-                case 1
-                    data_loading_demo();
-                case 2
-                    technical_indicators_demo();
-                case 3
-                    price_analysis_demo();
-                case 4
-                    portfolio_optimization_demo();
-                case 5
-                    risk_analysis_demo();
-                case 6
-                    complete_strategy_demo();
-                otherwise
-                    fprintf('Invalid choice. Please select 0-6.\n');
+
+            if isequal(choice, 0)
+                fprintf('\nExiting Market Analysis Demo. Goodbye!\n');
+                break;
+            elseif isscalar(choice) && any(choice == 1:numel(section_names))
+                run_section(choice);
+            else
+                fprintf('Invalid choice. Please select 0-6.\n');
             end
-            
-            if choice ~= 0
-                input('\nPress Enter to continue...');
-            end
+
+            input('\nPress Enter to continue...');
         end
-        
+
     catch err
         fprintf('Error in market_demo: %s\n', err.message);
+    end
+end
+
+function run_section(k)
+    switch k
+        case 1
+            data_loading_demo();
+        case 2
+            technical_indicators_demo();
+        case 3
+            price_analysis_demo();
+        case 4
+            portfolio_optimization_demo();
+        case 5
+            risk_analysis_demo();
+        case 6
+            complete_strategy_demo();
+        otherwise
+            error('no section %d', k);
     end
 end
 

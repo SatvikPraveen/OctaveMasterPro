@@ -1,10 +1,17 @@
 % Location: mini_projects/signal_processing_simulation/signal_demo.m
 % Main Signal Processing Demonstration Script
 
-function signal_demo()
+function signal_demo(mode)
     % Complete signal processing simulation demonstration
+    %
+    %   signal_demo          interactive menu (runs everything when headless)
+    %   signal_demo('all')   run every section in sequence without prompts
+    %   signal_demo(k)       run only section k (1-5) without the menu
     
-    clear; clc; close all;
+    if nargin < 1
+        mode = '';
+    end
+    clc; close all;
     
     fprintf('====================================================\n');
     fprintf('    SIGNAL PROCESSING SIMULATION DEMONSTRATION     \n');
@@ -21,51 +28,82 @@ function signal_demo()
     rand('state', 42);
     randn('state', 42);
     
+    section_names = {'Signal Generation Demo', 'Filter Design Demo', ...
+                     'Spectrum Analysis Demo', 'Complete Pipeline Demo', ...
+                     'Interactive Signal Lab'};
+    
+    if isempty(mode) && ~is_interactive_session()
+        fprintf('Non-interactive session detected: running all sections.\n');
+        mode = 'all';
+    end
+    
+    if ~isempty(mode)
+        % Non-interactive: run the requested sections without input()
+        if ischar(mode) && strcmpi(mode, 'all')
+            sections = 1:numel(section_names);
+        elseif isnumeric(mode)
+            sections = mode(:)';
+        else
+            error('signal_demo: MODE must be ''all'' or a section number');
+        end
+        is_interactive_session(false);
+        restore = onCleanup(@() is_interactive_session([]));
+        for k = sections
+            fprintf('\n=== Section %d: %s ===\n', k, section_names{k});
+            try
+                run_section(k);
+            catch err
+                fprintf('Error in section %d (%s): %s\n', k, section_names{k}, err.message);
+            end
+            close all;
+        end
+        fprintf('\nSignal processing demo finished.\n');
+        return;
+    end
+    
     try
         % Main demonstration menu
         while true
             fprintf('\nSelect a demonstration:\n');
-            fprintf('1. Signal Generation Demo\n');
-            fprintf('2. Filter Design Demo\n');
-            fprintf('3. Spectrum Analysis Demo\n');
-            fprintf('4. Complete Pipeline Demo\n');
-            fprintf('5. Interactive Signal Lab\n');
+            for k = 1:numel(section_names)
+                fprintf('%d. %s\n', k, section_names{k});
+            end
             fprintf('0. Exit\n');
             
             choice = input('Enter your choice (0-5): ');
             
-            switch choice
-                case 0
-                    fprintf('\nExiting Signal Processing Demo. Goodbye!\n');
-                    break;
-                    
-                case 1
-                    signal_generation_demo();
-                    
-                case 2
-                    filter_design_demo();
-                    
-                case 3
-                    spectrum_analysis_demo();
-                    
-                case 4
-                    complete_pipeline_demo();
-                    
-                case 5
-                    interactive_signal_lab();
-                    
-                otherwise
-                    fprintf('Invalid choice. Please select 0-5.\n');
+            if isequal(choice, 0)
+                fprintf('\nExiting Signal Processing Demo. Goodbye!\n');
+                break;
+            elseif isscalar(choice) && any(choice == 1:numel(section_names))
+                run_section(choice);
+            else
+                fprintf('Invalid choice. Please select 0-5.\n');
             end
             
-            if choice ~= 0
-                input('\nPress Enter to continue...');
-            end
+            input('\nPress Enter to continue...');
         end
         
     catch err
         fprintf('Error in signal_demo: %s\n', err.message);
         fprintf('Make sure all required functions are in the current directory.\n');
+    end
+end
+
+function run_section(k)
+    switch k
+        case 1
+            signal_generation_demo();
+        case 2
+            filter_design_demo();
+        case 3
+            spectrum_analysis_demo();
+        case 4
+            complete_pipeline_demo();
+        case 5
+            interactive_signal_lab();
+        otherwise
+            error('no section %d', k);
     end
 end
 
@@ -338,6 +376,14 @@ function interactive_signal_lab()
     
     fprintf('\n--- Interactive Signal Processing Lab ---\n');
     
+    if ~is_interactive_session()
+        % Headless: run every lab item with its default parameters
+        custom_signal_generation();
+        compare_filter_methods_demo();
+        window_effects_demo();
+        return;
+    end
+    
     while true
         fprintf('\nInteractive Lab Menu:\n');
         fprintf('1. Custom signal generation\n');
@@ -365,18 +411,14 @@ end
 function custom_signal_generation()
     fprintf('\n--- Custom Signal Generation ---\n');
     
-    fs = input('Enter sampling frequency (Hz) [1000]: ');
-    if isempty(fs), fs = 1000; end
+    fs = ask_value('Enter sampling frequency (Hz) [1000]: ', 1000);
     
-    duration = input('Enter duration (seconds) [2]: ');
-    if isempty(duration), duration = 2; end
+    duration = ask_value('Enter duration (seconds) [2]: ', 2);
     
     fprintf('Signal types: sine, square, sawtooth, chirp, noise\n');
-    signal_type = input('Enter signal type [sine]: ', 's');
-    if isempty(signal_type), signal_type = 'sine'; end
+    signal_type = ask_value('Enter signal type [sine]: ', 'sine', 's');
     
-    frequency = input('Enter frequency (Hz) [50]: ');
-    if isempty(frequency), frequency = 50; end
+    frequency = ask_value('Enter frequency (Hz) [50]: ', 50);
     
     [t, signal] = generate_signal(signal_type, fs, duration, frequency, 1);
     

@@ -1,56 +1,102 @@
 % Location: mini_projects/image_processing_basics/image_demo.m
 % Main Image Processing Demonstration Script
 
-function image_demo()
+function image_demo(mode)
     % Complete image processing demonstration
-    
-    clear; clc; close all;
-    
+    %
+    %   image_demo          interactive menu (runs everything when headless)
+    %   image_demo('all')   run every section in sequence without prompts
+    %   image_demo(k)       run only section k (1-6) without the menu
+
+    if nargin < 1
+        mode = '';
+    end
+    clc; close all;
+
     fprintf('====================================================\n');
     fprintf('      IMAGE PROCESSING BASICS DEMONSTRATION        \n');
     fprintf('====================================================\n\n');
-    
+
+    section_names = {'Image Loading & Preprocessing', ...
+                     'Basic Filters (Gaussian, Median, Edge)', ...
+                     'Morphological Operations', ...
+                     'Histogram Analysis & Enhancement', ...
+                     'Complete Processing Pipeline', ...
+                     'Interactive Image Lab'};
+
+    if isempty(mode) && ~is_interactive_session()
+        fprintf('Non-interactive session detected: running all sections.\n');
+        mode = 'all';
+    end
+
+    if ~isempty(mode)
+        % Non-interactive: run the requested sections without input()
+        if ischar(mode) && strcmpi(mode, 'all')
+            sections = 1:numel(section_names);
+        elseif isnumeric(mode)
+            sections = mode(:)';
+        else
+            error('image_demo: MODE must be ''all'' or a section number');
+        end
+        is_interactive_session(false);
+        restore = onCleanup(@() is_interactive_session([]));
+        for k = sections
+            fprintf('\n=== Section %d: %s ===\n', k, section_names{k});
+            try
+                run_section(k);
+            catch err
+                fprintf('Error in section %d (%s): %s\n', k, section_names{k}, err.message);
+            end
+            close all;
+        end
+        fprintf('\nImage processing demo finished.\n');
+        return;
+    end
+
     try
         while true
             fprintf('\nSelect a demonstration:\n');
-            fprintf('1. Image Loading & Preprocessing\n');
-            fprintf('2. Basic Filters (Gaussian, Median, Edge)\n');
-            fprintf('3. Morphological Operations\n');
-            fprintf('4. Histogram Analysis & Enhancement\n');
-            fprintf('5. Complete Processing Pipeline\n');
-            fprintf('6. Interactive Image Lab\n');
+            for k = 1:numel(section_names)
+                fprintf('%d. %s\n', k, section_names{k});
+            end
             fprintf('0. Exit\n');
-            
+
             choice = input('Enter your choice (0-6): ');
-            
-            switch choice
-                case 0
-                    fprintf('\nExiting Image Processing Demo. Goodbye!\n');
-                    break;
-                case 1
-                    image_loading_demo();
-                case 2
-                    basic_filters_demo();
-                case 3
-                    morphology_demo();
-                case 4
-                    histogram_demo();
-                case 5
-                    complete_pipeline_demo();
-                case 6
-                    interactive_image_lab();
-                otherwise
-                    fprintf('Invalid choice. Please select 0-6.\n');
+
+            if isequal(choice, 0)
+                fprintf('\nExiting Image Processing Demo. Goodbye!\n');
+                break;
+            elseif isscalar(choice) && any(choice == 1:numel(section_names))
+                run_section(choice);
+            else
+                fprintf('Invalid choice. Please select 0-6.\n');
             end
-            
-            if choice ~= 0
-                input('\nPress Enter to continue...');
-            end
+
+            input('\nPress Enter to continue...');
         end
-        
+
     catch err
         fprintf('Error in image_demo: %s\n', err.message);
         fprintf('Make sure all required functions are available.\n');
+    end
+end
+
+function run_section(k)
+    switch k
+        case 1
+            image_loading_demo();
+        case 2
+            basic_filters_demo();
+        case 3
+            morphology_demo();
+        case 4
+            histogram_demo();
+        case 5
+            complete_pipeline_demo();
+        case 6
+            interactive_image_lab();
+        otherwise
+            error('no section %d', k);
     end
 end
 
@@ -189,6 +235,15 @@ function interactive_image_lab()
     
     fprintf('\n--- Interactive Image Processing Lab ---\n');
     
+    if ~is_interactive_session()
+        % Headless: run every lab item with its default parameters
+        custom_filter_demo();
+        morphology_playground();
+        histogram_tools();
+        edge_detection_tuning();
+        return;
+    end
+    
     while true
         fprintf('\nInteractive Lab Menu:\n');
         fprintf('1. Custom filter parameters\n');
@@ -221,11 +276,9 @@ function custom_filter_demo()
     
     img = load_image('', 'grayscale', true, 'normalize', true);
     
-    sigma = input('Enter Gaussian sigma [2]: ');
-    if isempty(sigma), sigma = 2; end
+    sigma = ask_value('Enter Gaussian sigma [2]: ', 2);
     
-    kernel_size = input('Enter median filter size [5]: ');
-    if isempty(kernel_size), kernel_size = 5; end
+    kernel_size = ask_value('Enter median filter size [5]: ', 5);
     
     gaussian_result = apply_gaussian_filter(img, sigma);
     median_result = apply_median_filter(img, kernel_size);
@@ -244,11 +297,9 @@ function morphology_playground()
     img = create_binary_test_image();
     
     fprintf('Structuring elements: disk, square, cross, line\n');
-    shape = input('Enter shape [disk]: ', 's');
-    if isempty(shape), shape = 'disk'; end
+    shape = ask_value('Enter shape [disk]: ', 'disk', 's');
     
-    size_param = input('Enter size [3]: ');
-    if isempty(size_param), size_param = 3; end
+    size_param = ask_value('Enter size [3]: ', 3);
     
     se = create_structuring_element(shape, size_param);
     
@@ -274,8 +325,7 @@ function histogram_tools()
     img = load_image('', 'grayscale', true);
     
     fprintf('Enhancement methods: equalize, adaptive, match\n');
-    method = input('Enter method [equalize]: ', 's');
-    if isempty(method), method = 'equalize'; end
+    method = ask_value('Enter method [equalize]: ', 'equalize', 's');
     
     switch method
         case 'equalize'
@@ -301,14 +351,11 @@ function edge_detection_tuning()
     
     img = load_image('', 'grayscale', true, 'normalize', true);
     
-    sigma = input('Enter Gaussian sigma [1]: ');
-    if isempty(sigma), sigma = 1; end
+    sigma = ask_value('Enter Gaussian sigma [1]: ', 1);
     
-    low_thresh = input('Enter low threshold [0.1]: ');
-    if isempty(low_thresh), low_thresh = 0.1; end
+    low_thresh = ask_value('Enter low threshold [0.1]: ', 0.1);
     
-    high_thresh = input('Enter high threshold [0.2]: ');
-    if isempty(high_thresh), high_thresh = 0.2; end
+    high_thresh = ask_value('Enter high threshold [0.2]: ', 0.2);
     
     edges = canny_edge_detection(img, 'sigma', sigma, 'low_threshold', low_thresh, 'high_threshold', high_thresh);
     [sobel_mag, ~] = sobel_edge_detection(img);
