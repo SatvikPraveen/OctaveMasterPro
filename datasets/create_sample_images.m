@@ -3,6 +3,19 @@
 
 fprintf('Creating sample images for OctaveMasterPro...\n');
 
+% Helper: set the RGB value of every pixel selected by a 2-D logical mask
+% (indexing a HxWx3 array as img(mask, :) is not valid, so go per channel)
+function img = paint_mask(img, mask, color)
+    if isscalar(color)
+        color = repmat(color, 1, size(img, 3));
+    end
+    for c = 1:size(img, 3)
+        channel = img(:,:,c);
+        channel(mask) = color(c);
+        img(:,:,c) = channel;
+    end
+end
+
 % Create directories if they don't exist
 if ~exist('images', 'dir')
     mkdir('images');
@@ -87,8 +100,8 @@ for i = 1:4
             % Add geometric shapes
             circle1 = (X - 100).^2 + (Y - 100).^2 < 40^2;
             circle2 = (X - 180).^2 + (Y - 150).^2 < 30^2;
-            sample_img(circle1, :) = repmat([1, 0.5, 0.2], sum(circle1(:)), 1);
-            sample_img(circle2, :) = repmat([0.2, 0.8, 0.9], sum(circle2(:)), 1);
+            sample_img = paint_mask(sample_img, circle1, [1, 0.5, 0.2]);
+            sample_img = paint_mask(sample_img, circle2, [0.2, 0.8, 0.9]);
             
         case 2 % Texture pattern
             % Create a wood-like texture
@@ -180,7 +193,7 @@ for i = 1:10
         % Add circle
         circle_center = [width/2 + randn()*30, height/2 + randn()*30];
         circle_mask = (X - circle_center(1)).^2 + (Y - circle_center(2)).^2 < (20 + i*2)^2;
-        batch_img(circle_mask, :) = repmat([1, 1, 0], sum(circle_mask(:)), 1);
+        batch_img = paint_mask(batch_img, circle_mask, [1, 1, 0]);
     end
     
     batch_img = max(0, min(1, batch_img));
@@ -238,27 +251,24 @@ for i = 1:5
         % Different staining for each image
         if i <= 2
             % Blue/purple staining
-            micro_img(cell_mask, 1) = 0.3;
-            micro_img(cell_mask, 2) = 0.2;
-            micro_img(cell_mask, 3) = 0.8;
+            micro_img = paint_mask(micro_img, cell_mask, [0.3, 0.2, 0.8]);
         else
             % Green fluorescence
-            micro_img(cell_mask, 1) = 0.2;
-            micro_img(cell_mask, 2) = 0.8;
-            micro_img(cell_mask, 3) = 0.3;
+            micro_img = paint_mask(micro_img, cell_mask, [0.2, 0.8, 0.3]);
         end
         
         % Nucleus
         nucleus_radius = cell_radius * 0.4;
         nucleus_mask = (X - center(1)).^2 + (Y - center(2)).^2 < nucleus_radius^2;
-        micro_img(nucleus_mask, :) = 0.1;
+        micro_img = paint_mask(micro_img, nucleus_mask, 0.1);
     end
     
     % Background
     background_level = 0.9;
     for c = 1:3
-        background_mask = micro_img(:,:,c) == 0;
-        micro_img(background_mask, c) = background_level;
+        channel = micro_img(:,:,c);
+        channel(channel == 0) = background_level;
+        micro_img(:,:,c) = channel;
     end
     
     filename = sprintf('images/medical/microscopy_%02d.png', i);
