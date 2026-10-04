@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "OctaveMasterPro: verified numerical methods and leakage-aware evaluation in GNU Octave"
+type: software
+authors:
+  - family-names: Praveen
+    given-names: Satvik
+version: 0.2.0
+date-released: 2026-10-04
+license: MIT
+repository-code: "https://github.com/SatvikPraveen/OctaveMasterPro"
+keywords:
+  - GNU Octave
+  - numerical linear algebra
+  - optimization
+  - bootstrap
+  - predictive maintenance
+  - data leakage
+  - reproducibility
