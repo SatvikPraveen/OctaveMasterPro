@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         octave-io \
         octave-parallel \
         gnuplot-nox \
+        ghostscript \
+        fonts-freefont-otf \
         python3 \
         python3-venv \
         git \

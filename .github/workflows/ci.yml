@@ -76,7 +76,8 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq --no-install-recommends \
-            octave octave-signal octave-statistics octave-parallel gnuplot-nox
+            octave octave-signal octave-statistics octave-parallel gnuplot-nox \
+            ghostscript fonts-freefont-otf
           python3 -m pip install --user "nbclient" "nbformat" "octave_kernel==1.1.1"
           python3 -m octave_kernel install --user
       - name: Execute all notebooks
