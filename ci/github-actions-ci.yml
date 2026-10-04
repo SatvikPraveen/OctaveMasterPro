@@ -42,6 +42,8 @@ jobs:
         run: octave --no-gui --eval "addpath tests; exit (! run_tests ());"
       - name: Parse check (all tracked .m files)
         run: octave --no-gui --eval "addpath tests; exit (! check_parse ());"
+      - name: Documentation examples execute
+        run: octave --no-gui --no-window-system --eval "addpath docs; exit (! check_usage_examples ());"
 
   experiment-smoke:
     name: Flagship experiment (quick mode)

@@ -281,22 +281,23 @@ exist('sensor_data.mat', 'file')
 
 ### CSV Reading Errors
 
-**Problem**: `readtable` fails or produces wrong results
+**Problem**: `readtable` is undefined or fails
+
+GNU Octave has no `table` type, so `readtable`, `detectImportOptions` and
+`writetable` are MATLAB-only.
 
 **Solutions**:
 
 ```octave
-% Check file format
-type data1.csv | head
+% Mixed-type CSV with a header row -> struct of column vectors
+addpath inst
+T = omp.io.read_csv ('flagship_project/datasets/equipment_metadata.csv');
+fieldnames (T)            % column names, in file order
+T.Power_Rating_kW         % numeric column (double)
+T.Equipment_Type          % text column (cellstr)
 
-% Specify options
-opts = detectImportOptions('data1.csv');
-opts.Delimiter = ',';
-opts.VariableNamesLine = 1;
-data = readtable('data1.csv', opts);
-
-% Alternative: Use csvread
-data_matrix = csvread('data1.csv', 1, 0); % Skip header
+% Purely numeric CSV: skip the header row
+data_matrix = csvread ('data.csv', 1, 0);
 ```
 
 ### Path Issues

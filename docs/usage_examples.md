@@ -1,474 +1,112 @@
-# File location: OctaveMasterPro/docs/usage_examples.md
+# Usage examples
 
-# 📚 Usage Examples
+Every snippet below is executed by `docs/check_usage_examples.m` (`make docs-check`),
+so the code cannot drift from the library; the numbers in comments are
+real outputs on Octave 8.4 / OpenBLAS 0.3.26. Run from the repository root after `addpath inst`.
 
-Common patterns and code snippets for OctaveMasterPro learning modules.
-
-## 🏁 Quick Start Examples
-
-### Loading and Inspecting Data
+## Reproducibility first
 
 ```octave
-% Load CSV data
-data = readtable('datasets/data1.csv');
-head(data)
-
-% Load MAT file
-load('datasets/sensor_data.mat');
-whos
-
-% Basic statistics
-mean(data.Salary)
-std(data.Performance_Score)
+addpath inst
+omp.repro.seed (42);              % seeds rand, randn, randi, rande, randg, randp
+omp.repro.env_info ("print");     % Octave / BLAS / LAPACK / packages / git revision
 ```
 
-### Basic Plotting
+## Numerical linear algebra
 
 ```octave
-% Simple line plot
-x = linspace(0, 2*pi, 100);
-y = sin(x);
-plot(x, y);
-title('Sine Wave');
-xlabel('x');
-ylabel('sin(x)');
+A = hilb (12);                                    % cond(A) ~ 1.7e16
+[Q, R] = omp.linalg.householder_qr (A, "econ");
+[Qm, ~] = omp.linalg.gram_schmidt (A, "mgs");
+printf ("Householder: %.1e   MGS: %.1e\n", ...
+        norm (eye (12) - Q' * Q), norm (eye (12) - Qm' * Qm));
+% Householder: 1.5e-15   MGS: 1.4e-01      (MGS loses orthogonality ~ u*kappa)
 
-% Multiple plots
-subplot(2,1,1);
-plot(x, sin(x));
-title('Sine');
-
-subplot(2,1,2);
-plot(x, cos(x));
-title('Cosine');
+omp.repro.seed (1);
+B = randn (500, 40) * randn (40, 300);            % exact rank 40
+[U, S, V] = omp.linalg.randomized_svd (B, 40, "Seed", 1);
+printf ("relative error %.1e\n", norm (B - U * S * V', "fro") / norm (B, "fro"));
+% relative error 2.3e-15
 ```
 
-## 📊 Data Analysis Patterns
-
-### Working with Employee Data (data1.csv)
+## Optimization
 
 ```octave
-% Load data
-data = readtable('datasets/data1.csv');
+[x, f, info] = omp.optim.bfgs (@omp.optim.rosenbrock, [-1.2; 1]);
+printf ("x = [%.6f %.6f], %d iterations, %d evaluations\n", x, info.iterations, info.nfev);
+% x = [1.000000 1.000000], 38 iterations, 48 evaluations
 
-% Group by department
-dept_stats = grpstats(data, 'Department', {'mean', 'std'}, 'DataVars', 'Salary');
+printf ("gradient check: %.1e\n", omp.optim.gradcheck (@omp.optim.rosenbrock, [0.3; -0.7]));
+% gradient check: 1.8e-11
 
-% Filter active employees
-active_data = data(strcmp(data.Active, 'Yes'), :);
-
-% Age distribution
-histogram(data.Age, 15);
-title('Age Distribution');
-
-% Salary vs Performance scatter
-scatter(data.Performance_Score, data.Salary, 50, 'filled');
-xlabel('Performance Score');
-ylabel('Salary ($)');
-title('Salary vs Performance');
+e = abs (info.trace.x(:, 1) - 1);
+printf ("empirical order of convergence: %.2f\n", omp.optim.convergence_order (e(end-8:end)));
+% empirical order of convergence: 1.47      (superlinear, as expected for BFGS)
 ```
 
-### Time Series Analysis (stock_prices.csv)
+## Statistical inference
 
 ```octave
-% Load stock data
-stocks = readtable('datasets/stock_prices.csv');
+omp.repro.seed (3);
+a = randn (40, 1) + 0.6;  b = randn (40, 1);
+ci = omp.stats.bootstrap_ci (a, @mean, "Seed", 1);         % BCa interval for mean(a)
+p = omp.stats.permutation_test (a, b, "B", 9999, "Seed", 2);
+g = omp.stats.effect_size (a, b, "hedges_g");
+printf ("mean(a) 95%% CI [%.2f, %.2f]; p = %.4f; Hedges' g = %.2f\n", ci, p, g);
+% mean(a) 95% CI [0.08, 0.74]; p = 0.0533; Hedges' g = 0.43
+% (true shift 0.6: one n = 40 sample estimates it with substantial noise;
+%  the effect size is the quantity to report, not only the p-value)
 
-% Filter for specific stock
-aapl = stocks(strcmp(stocks.Symbol, 'AAPL'), :);
-
-% Convert dates
-dates = datenum(aapl.Date);
-
-% Price plot
-plot(dates, aapl.Close);
-datetick('x', 'yyyy-mm');
-title('AAPL Stock Price');
-ylabel('Price ($)');
-
-% Calculate returns
-returns = diff(log(aapl.Close));
-histogram(returns, 50);
-title('AAPL Daily Returns Distribution');
-
-% Moving average
-window = 20;
-ma20 = movmean(aapl.Close, window);
-plot(dates, aapl.Close, 'b-', dates, ma20, 'r-', 'LineWidth', 2);
-legend('Price', '20-day MA');
+q = omp.stats.p_adjust ([0.01 0.02 0.03 0.04 0.05], "holm")
+% q = 0.050000   0.080000   0.090000   0.090000   0.090000   (matches R's p.adjust)
 ```
 
-## 🔬 Scientific Data Analysis
-
-### Sensor Data Processing
+## Spectral estimation
 
 ```octave
-% Load multi-dimensional sensor data
-load('datasets/sensor_data.mat');
-
-% Analyze temperature patterns
-avg_temp_by_hour = squeeze(mean(mean(temperature_matrix, 1), 3));
-plot(0:23, avg_temp_by_hour);
-xlabel('Hour of Day');
-ylabel('Temperature (°C)');
-title('Average Temperature Profile');
-
-% Pressure signal analysis
-fs = 1000; % Sampling rate
-t = (0:length(pressure_readings)-1) / fs;
-
-plot(t(1:1000), pressure_readings(1:1000));
-xlabel('Time (s)');
-ylabel('Pressure (Pa)');
-title('Pressure Signal (First Second)');
-
-% FFT analysis
-Y = fft(pressure_readings);
-f = (0:length(Y)-1) * fs / length(Y);
-plot(f(1:end/2), abs(Y(1:end/2)));
-xlabel('Frequency (Hz)');
-ylabel('Magnitude');
-title('Pressure Signal Spectrum');
+fs = 1000;  t = (0:2^14 - 1)' / fs;
+x = 2 * sin (2 * pi * 50 * t) + randn (size (t));
+[P, f, info] = omp.signal.welch_psd (x, fs, "SegmentLength", 1024);
+[~, k] = max (P);
+printf ("peak %.1f Hz, %d segments, ~%.0f degrees of freedom\n", f(k), info.segments, info.dof);
+% peak 49.8 Hz, 31 segments, ~59 degrees of freedom
+% (bin spacing is fs/L = 0.98 Hz, so 49.8 Hz is the bin nearest 50 Hz)
 ```
 
-## 📈 Statistical Analysis Examples
-
-### Experiment Data Analysis
+## Leakage-aware model evaluation
 
 ```octave
-% Load experiment data
-exp_data = readtable('datasets/experiment_data.csv');
-
-% Group comparison
-control = exp_data(strcmp(exp_data.Group, 'Control'), :);
-treat_a = exp_data(strcmp(exp_data.Group, 'Treatment_A'), :);
-treat_b = exp_data(strcmp(exp_data.Group, 'Treatment_B'), :);
-
-% Calculate improvement
-control.Improvement = control.Post_Test - control.Pre_Test;
-treat_a.Improvement = treat_a.Post_Test - treat_a.Pre_Test;
-treat_b.Improvement = treat_b.Post_Test - treat_b.Pre_Test;
-
-% Box plot comparison
-boxplot([control.Improvement; treat_a.Improvement; treat_b.Improvement], ...
-        [ones(height(control),1); 2*ones(height(treat_a),1); 3*ones(height(treat_b),1)]);
-set(gca, 'XTickLabel', {'Control', 'Treatment A', 'Treatment B'});
-ylabel('Test Score Improvement');
-title('Treatment Effectiveness');
-
-% T-test
-[h, p] = ttest2(treat_b.Improvement, control.Improvement);
-fprintf('Treatment B vs Control: p = %.4f\n', p);
-```
-
-## 🎛️ Signal Processing Examples
-
-### Audio Signal Analysis
-
-```octave
-% Read audio file
-[audio, fs] = audioread('datasets/signals/audio/sine_wave_440hz.wav');
-
-% Time domain plot
-t = (0:length(audio)-1) / fs;
-plot(t, audio);
-xlabel('Time (s)');
-ylabel('Amplitude');
-title('Audio Signal');
-
-% Frequency analysis
-Y = fft(audio);
-f = (0:length(Y)-1) * fs / length(Y);
-semilogx(f(1:end/2), 20*log10(abs(Y(1:end/2))));
-xlabel('Frequency (Hz)');
-ylabel('Magnitude (dB)');
-title('Audio Spectrum');
-
-% Spectrogram
-spectrogram(audio, 1024, 512, 1024, fs, 'yaxis');
-title('Audio Spectrogram');
-```
-
-### Filter Design and Application
-
-```octave
-% Load signal data
-load('datasets/signal_analysis.mat');
-
-% Design lowpass filter
-fc = 100; % Cutoff frequency
-[b, a] = butter(4, fc/(fs/2));
-
-% Apply filter
-filtered = filter(b, a, noisy_signal);
-
-% Compare signals
-subplot(3,1,1);
-plot(t, clean_signal);
-title('Clean Signal');
-
-subplot(3,1,2);
-plot(t, noisy_signal);
-title('Noisy Signal');
-
-subplot(3,1,3);
-plot(t, filtered);
-title('Filtered Signal');
-```
-
-## 🖼️ Image Processing Examples
-
-### Basic Image Operations
-
-```octave
-% Load image
-img = imread('datasets/images/samples/sample_01.jpg');
-imshow(img);
-title('Original Image');
-
-% Convert to grayscale
-gray_img = rgb2gray(img);
-figure;
-imshow(gray_img);
-title('Grayscale');
-
-% Edge detection
-edges = edge(gray_img, 'canny');
-figure;
-imshow(edges);
-title('Edge Detection');
-
-% Histogram analysis
-figure;
-subplot(2,2,1); imhist(img(:,:,1)); title('Red Channel');
-subplot(2,2,2); imhist(img(:,:,2)); title('Green Channel');
-subplot(2,2,3); imhist(img(:,:,3)); title('Blue Channel');
-subplot(2,2,4); imhist(gray_img); title('Grayscale');
-```
-
-### Batch Image Processing
-
-```octave
-% Process multiple images
-image_dir = 'datasets/images/batch/';
-output_dir = 'processed_images/';
-
-if ~exist(output_dir, 'dir')
-    mkdir(output_dir);
+sim = omp.pdm.simulate_fleet ("Units", 20, "Hours", 24 * 90, "Seed", 1);
+[X, names] = omp.pdm.causal_features (sim);       % past-only windows
+[y, ok] = omp.pdm.failure_labels (sim, 72);       % fails within 72 h; censoring-aware
+keep = ok & all (isfinite (X), 2) & mod (sim.t, 6) == 0;
+folds = omp.ml.purged_time_splits (sim.t(keep), 3, "Horizon", 72, "Embargo", 24);
+Xk = X(keep, :);  yk = y(keep);
+s = NaN (numel (yk), 1);
+for i = 1:numel (folds)
+  m = omp.ml.logistic_fit (Xk(folds(i).train, :), yk(folds(i).train), "Lambda", 1);
+  s(folds(i).test) = omp.ml.logistic_predict (m, Xk(folds(i).test, :));
 end
-
-% Get list of images
-image_files = dir([image_dir '*.jpg']);
-
-for i = 1:length(image_files)
-    % Load image
-    img = imread([image_dir image_files(i).name]);
-
-    % Apply processing (example: edge enhancement)
-    gray = rgb2gray(img);
-    edges = edge(gray, 'sobel');
-
-    % Save result
-    output_name = [output_dir 'processed_' image_files(i).name];
-    imwrite(edges, output_name);
-
-    fprintf('Processed %s\n', image_files(i).name);
-end
+k = ! isnan (s);
+[auc, se] = omp.ml.roc_auc (yk(k), s(k));
+c = omp.ml.calibration (yk(k), s(k));
+printf ("AUC %.3f (DeLong SE %.3f), AP %.3f at prevalence %.3f, ECE %.3f\n", auc, se, ...
+        omp.ml.average_precision (yk(k), s(k)), mean (yk(k)), c.ece);
+% AUC 0.825 (DeLong SE 0.009), AP 0.476 at prevalence 0.132, ECE 0.031
 ```
 
-## 🔄 Parallel Processing Examples
+DeLong's standard error treats rows as independent. Rows from the same
+machine are correlated, so for inference use
+`omp.stats.cluster_bootstrap` over machines, as the flagship study does.
 
-### Parallel Loops
+## Benchmarking
 
 ```octave
-% Check parallel capability
-if exist('parfor')
-    fprintf('Parallel processing available\n');
-else
-    fprintf('Sequential processing only\n');
-end
+M = randn (200) + 200 * eye (200);
+r = omp.bench.timeit (@() M \ ones (200, 1), "Repeats", 25);
+printf ("median %.2f us (IQR %.2f us)\n", 1e6 * r.median, 1e6 * r.iqr);   % machine-dependent
 
-% Parallel computation example
-n = 1000;
-results = zeros(1, n);
-
-% Sequential version
-tic;
-for i = 1:n
-    results(i) = expensive_calculation(i);
-end
-sequential_time = toc;
-
-% Parallel version (if available)
-tic;
-parfor i = 1:n
-    results(i) = expensive_calculation(i);
-end
-parallel_time = toc;
-
-fprintf('Sequential: %.2f seconds\n', sequential_time);
-fprintf('Parallel: %.2f seconds\n', parallel_time);
-fprintf('Speedup: %.2fx\n', sequential_time / parallel_time);
-
-function result = expensive_calculation(x)
-    % Simulate computationally intensive task
-    result = sum(sin(1:x*100));
-end
+fit = omp.bench.amdahl_fit ([1 2 4 8], [1 1.9 3.4 5.6]);
+printf ("serial fraction %.3f -> speedup ceiling %.1fx\n", fit.serial_fraction, fit.max_speedup);
+% serial fraction 0.059 -> speedup ceiling 16.9x
 ```
-
-## 📐 Linear Algebra Examples
-
-### Matrix Operations
-
-```octave
-% Create matrices
-A = randn(100, 100);
-B = randn(100, 100);
-
-% Basic operations
-C = A * B;           % Matrix multiplication
-D = A + B;           % Element-wise addition
-E = A .* B;          % Element-wise multiplication
-
-% Decompositions
-[U, S, V] = svd(A);  % Singular Value Decomposition
-[Q, R] = qr(A);      % QR Decomposition
-[L, U, P] = lu(A);   % LU Decomposition
-
-% Eigenvalues
-[eigvec, eigval] = eig(A);
-
-% Solve linear system
-x = A \ randn(100, 1);
-```
-
-### Optimization Examples
-
-```octave
-% Function minimization
-function y = rosenbrock(x)
-    y = 100*(x(2) - x(1)^2)^2 + (1 - x(1))^2;
-end
-
-% Find minimum
-x0 = [-1, 1];
-[x_opt, fval] = fminunc(@rosenbrock, x0);
-
-fprintf('Optimum: x = [%.4f, %.4f]\n', x_opt(1), x_opt(2));
-fprintf('Function value: %.6f\n', fval);
-```
-
-## 🎯 Project Workflow Examples
-
-### Mini Project Structure
-
-```octave
-% Mini project template
-% 1. Load data
-data = load_project_data();
-
-% 2. Preprocessing
-clean_data = preprocess_data(data);
-
-% 3. Analysis
-results = analyze_data(clean_data);
-
-% 4. Visualization
-create_visualizations(results);
-
-% 5. Export results
-save_results(results, 'project_output.mat');
-```
-
-### Flagship Project Pipeline
-
-```octave
-% Complete data science pipeline
-function run_flagship_project()
-    % Data ingestion
-    raw_data = load_multiple_datasets();
-
-    % Data cleaning and validation
-    clean_data = data_cleaning_pipeline(raw_data);
-
-    % Feature engineering
-    features = extract_features(clean_data);
-
-    % Statistical modeling
-    model = build_predictive_model(features);
-
-    % Model validation
-    performance = validate_model(model, features);
-
-    % Visualization dashboard
-    create_dashboard(model, performance);
-
-    % Generate report
-    generate_report(model, performance, 'flagship_report.pdf');
-end
-```
-
-## 🔍 Debugging Tips
-
-### Common Issues
-
-```octave
-% Check variable types
-class(my_variable)
-size(my_variable)
-
-% Memory usage
-whos
-
-% Clear variables
-clear variable_name
-clear all  % Clear everything
-
-% Check loaded packages
-pkg list
-
-% Debugging plots
-figure; plot(debug_data); title('Debug Plot');
-```
-
-### Performance Profiling
-
-```octave
-% Profile code execution
-profile on;
-your_function(inputs);
-profile off;
-profshow;
-```
-
-## 📝 Best Practices
-
-### Code Organization
-
-- Use descriptive variable names
-- Add comments for complex operations
-- Break large scripts into functions
-- Use consistent indentation (2 spaces)
-
-### Data Handling
-
-- Always check data dimensions with `size()`
-- Validate data types before processing
-- Handle missing data appropriately
-- Use vectorized operations when possible
-
-### Visualization
-
-- Always label axes and add titles
-- Use appropriate plot types for data
-- Consider colorblind-friendly palettes
-- Save plots in appropriate formats
-
-### Performance
-
-- Vectorize operations instead of loops
-- Preallocate arrays when possible
-- Use built-in functions over custom implementations
-- Profile code to identify bottlenecks
-
-These examples provide practical starting points for all major learning modules and project types in OctaveMasterPro!

@@ -1,387 +1,109 @@
-# File location: OctaveMasterPro/docs/setup_guide.md
+# Setup guide
 
-# 🚀 OctaveMasterPro Setup Guide
+OctaveMasterPro needs **GNU Octave ≥ 6.1**. The test suite and the
+published results were produced with **Octave 8.4** on Ubuntu 24.04
+(OpenBLAS 0.3.26, LAPACK 3.12.0); every result file records its own
+environment in an `environment.txt` file.
 
-Complete setup instructions for all platforms and use cases.
-
-## 📋 Prerequisites
-
-### System Requirements
-
-- **CPU**: 2+ cores (4+ recommended)
-- **RAM**: 4GB minimum (8GB recommended)
-- **Storage**: 10GB free space
-- **OS**: Windows 10+, macOS 10.14+, Ubuntu 18.04+
-
-### Required Software
-
-- **Docker Desktop** (recommended method)
-- **Git** for version control
-- **Text editor** (VSCode recommended)
-
-## 🐳 Docker Setup (Recommended)
-
-### Step 1: Install Docker
+## Option 1: Docker (fully pinned)
 
 ```bash
-# Windows/macOS: Download Docker Desktop
-# https://docs.docker.com/get-docker/
-
-# Ubuntu:
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo usermod -aG docker $USER
-```
-
-### Step 2: Clone Repository
-
-```bash
-git clone https://github.com/yourusername/OctaveMasterPro.git
+git clone https://github.com/SatvikPraveen/OctaveMasterPro.git
 cd OctaveMasterPro
+docker compose build
+
+# JupyterLab on http://127.0.0.1:8888 (token required)
+JUPYTER_TOKEN=$(openssl rand -hex 16) docker compose up jupyter
+# then open http://127.0.0.1:8888/lab?token=<the token you set>
+
+# Octave command line, or any make target, inside the container
+docker compose run --rm octave-cli
+docker compose run --rm octave-cli make check
 ```
 
-### Step 3: Initialize Project
+The image runs as an unprivileged user, puts `inst/` and `utils/` on the
+Octave path via `~/.octaverc`, and publishes Jupyter on localhost only.
+The repository is bind-mounted, so edits on the host are visible inside
+the container.
+
+## Option 2: Native install
+
+**Ubuntu / Debian**
 
 ```bash
-chmod +x init_project.sh
-./init_project.sh
+sudo apt-get install octave octave-signal octave-statistics gnuplot-nox make
 ```
 
-### Step 4: Launch Environment
+**macOS (Homebrew)**
 
 ```bash
-# Start Jupyter Lab
-docker-compose up
-
-# Alternative: Detached mode
-docker-compose up -d
-
-# Access CLI
-docker-compose --profile cli run octave-cli
+brew install octave gnuplot
+octave --eval 'pkg install -forge signal statistics'
 ```
 
-### Step 5: Access Jupyter
+**Windows**: install Octave from <https://octave.org/download>, then run
+the `octave` commands below from the Octave prompt (`make` is optional).
 
-- **URL**: http://localhost:8888
-- **Alternative**: http://localhost:8889
-- **No password required** in development mode
-
-## 💻 Local Installation
-
-### Ubuntu/Debian
+Then, from the repository root:
 
 ```bash
-# Update package list
-sudo apt update
-
-# Install Octave and packages
-sudo apt install octave \
-    octave-parallel \
-    octave-statistics \
-    octave-image \
-    octave-signal \
-    octave-control \
-    octave-optim \
-    octave-io
-
-# Install Python and Jupyter
-sudo apt install python3 python3-pip
-pip3 install jupyter jupyterlab octave_kernel
-
-# Install Octave kernel
-python3 -m octave_kernel install --user
-
-# Start Jupyter
-cd OctaveMasterPro
-jupyter lab
+make check               # 125+ library tests and a parse check of every .m file
+make env                 # print Octave / BLAS / LAPACK / package versions
 ```
 
-### macOS (Homebrew)
+`signal` and `statistics` are optional. Library code depends only on
+core Octave; one test compares against `pwelch` when `signal` is installed.
+
+### Jupyter (optional)
 
 ```bash
-# Install Homebrew (if needed)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Install Octave
-brew install octave
-
-# Install Python packages
-pip3 install jupyter jupyterlab octave_kernel
-
-# Install kernel
-python3 -m octave_kernel install --user
-
-# Launch
-cd OctaveMasterPro
-jupyter lab
-```
-
-### Windows
-
-```batch
-REM Download and install Octave from octave.org
-REM Download Python from python.org
-
-REM Install Jupyter
-pip install jupyter jupyterlab octave_kernel
-
-REM Install kernel
+python3 -m venv .venv && . .venv/bin/activate
+pip install "jupyterlab==4.6.4" "octave_kernel==1.1.1"
 python -m octave_kernel install --user
-
-REM Launch
-cd OctaveMasterPro
 jupyter lab
 ```
 
-## 🔧 Verification Steps
+## Using the library
 
-### 1. Test Docker Environment
-
-```bash
-# Check containers
-docker-compose ps
-
-# Check logs
-docker-compose logs octave-master
-
-# Test Octave
-docker-compose exec octave-master octave --eval "disp('Hello Octave!')"
-```
-
-### 2. Test Jupyter Integration
-
-```bash
-# List kernels
-jupyter kernelspec list
-
-# Expected output should include 'octave'
-```
-
-### 3. Test Package Installation
-
-Open Octave and verify packages:
+Either add it to the path for a session:
 
 ```octave
-pkg list
+addpath ("/path/to/OctaveMasterPro/inst");
+omp.repro.env_info ("print");
 ```
 
-Required packages:
-
-- statistics
-- image
-- signal
-- parallel
-- optim
-- io
-- control
-
-### 4. Run Environment Check
-
-1. Open `notebooks/00_environment_check.ipynb`
-2. Run all cells (Ctrl+Shift+Enter)
-3. Verify:
-   - No errors in code execution
-   - Plots display correctly
-   - All packages load successfully
-   - Performance benchmarks complete
-
-## 🛠️ Advanced Configuration
-
-### Custom Port Configuration
-
-```yaml
-# docker-compose.override.yml
-version: "3.8"
-services:
-  octave-master:
-    ports:
-      - "9999:8888" # Custom port
-```
-
-### Memory Optimization
+or install it as an Octave package:
 
 ```bash
-# Increase Docker memory (Docker Desktop)
-# Settings → Resources → Memory → 6GB
-
-# Linux: Edit daemon.json
-sudo nano /etc/docker/daemon.json
-{
-  "default-runtime": "runc",
-  "default-ulimits": {
-    "memlock": {"hard": -1, "soft": -1}
-  }
-}
+make package             # builds build/octavemasterpro.tar.gz from HEAD
+octave --eval 'pkg install build/octavemasterpro.tar.gz'
 ```
-
-### Volume Optimization
-
-```yaml
-# Use named volumes for better performance
-volumes:
-  octave_cache:
-    driver: local
-```
-
-### Performance Tuning
 
 ```octave
-% Octave configuration (~/.octaverc)
-graphics_toolkit('qt');
-set(0, 'defaultfigurerenderer', 'opengl');
-
-% Memory optimization
-clear all
-pack
+pkg load octavemasterpro
+help omp.stats.bootstrap_ci
 ```
 
-## 🌐 Network Configuration
-
-### Proxy Settings
+## Reproducing the published results
 
 ```bash
-# Docker with corporate proxy
-export HTTP_PROXY=http://proxy.company.com:8080
-export HTTPS_PROXY=http://proxy.company.com:8080
-
-docker-compose up --build
+make audit               # flagship_project/results/data_audit.md
+make experiment          # flagship_project/results/* (5 seeds; tens of minutes)
+octave --eval 'addpath experiments; qr_orthogonality; rsvd_accuracy'
 ```
 
-### Firewall Configuration
+Every function that draws random numbers accepts a `"Seed"` option or is
+seeded explicitly. Results should match bit-for-bit on the same Octave
+and BLAS build. On other BLAS builds, expect agreement to within
+floating-point reassociation; it will not be bitwise.
 
-Allow these ports:
+## Troubleshooting
 
-- **8888**: Jupyter Lab
-- **8889**: Alternative Jupyter port
+See [troubleshooting.md](troubleshooting.md). Common issues:
 
-```bash
-# Ubuntu UFW
-sudo ufw allow 8888
-sudo ufw allow 8889
-
-# Windows Firewall
-# Use Windows Defender Firewall → Allow apps
-```
-
-## 📊 Development Workflow
-
-### Daily Usage
-
-```bash
-# 1. Start environment
-docker-compose up -d
-
-# 2. Open Jupyter
-# http://localhost:8888
-
-# 3. Work on notebooks
-# Start with 00_environment_check.ipynb
-
-# 4. Stop environment
-docker-compose down
-```
-
-### Project Development
-
-```bash
-# Create new branch
-git checkout -b feature/new-analysis
-
-# Work on code
-# Commit frequently
-
-# Push changes
-git add .
-git commit -m "Add new analysis module"
-git push origin feature/new-analysis
-```
-
-### Code Quality
-
-```bash
-# Install pre-commit
-pip install pre-commit
-
-# Set up hooks
-pre-commit install
-
-# Run checks
-pre-commit run --all-files
-```
-
-## 🚨 Quick Fixes
-
-### Port Already in Use
-
-```bash
-# Find process using port
-lsof -i :8888
-sudo kill -9 <PID>
-
-# Or use different port
-docker-compose up --scale octave-master=0
-docker run -p 9999:8888 octave-master-pro_octave-master
-```
-
-### Permission Denied
-
-```bash
-# Fix file permissions
-sudo chown -R $USER:$USER .
-chmod +x *.sh
-
-# Docker permissions (Linux)
-sudo usermod -aG docker $USER
-newgrp docker
-```
-
-### Container Won't Start
-
-```bash
-# Complete reset
-docker-compose down -v
-docker system prune -a
-docker-compose build --no-cache
-docker-compose up
-```
-
-### Jupyter Kernel Issues
-
-```bash
-# Reinstall kernel
-pip3 uninstall octave_kernel
-pip3 install octave_kernel
-python3 -m octave_kernel install --user --force
-
-# Clear Jupyter cache
-jupyter --paths
-rm -rf ~/.jupyter/kernels/octave
-```
-
-## ✅ Success Checklist
-
-- [ ] Docker containers start without errors
-- [ ] Jupyter Lab accessible at localhost:8888
-- [ ] Octave kernel appears in kernel list
-- [ ] Environment check notebook runs completely
-- [ ] All plots display correctly in notebooks
-- [ ] File operations work (CSV/MAT loading)
-- [ ] Parallel processing functions available
-- [ ] No permission errors with project files
-
-## 🎯 Next Steps
-
-1. **Start Learning**: Open `notebooks/00_environment_check.ipynb`
-2. **Follow Sequence**: Work through notebooks 01-12 in order
-3. **Practice**: Complete exercises in each notebook
-4. **Apply Knowledge**: Tackle mini projects
-5. **Build Portfolio**: Complete flagship project
-
-## 📞 Getting Help
-
-- **Check logs**: `docker-compose logs`
-- **Documentation**: See `troubleshooting.md` for specific issues
-- **Community**: Open GitHub issue with system details
-- **Support**: Include error messages and system information
-
-**Ready to master Octave!** 🎉
+| Symptom | Cause / fix |
+|---|---|
+| `'omp' undefined` | `inst/` is not on the path: `addpath inst` or `pkg load octavemasterpro`. |
+| `parse error` inside `[...]` or `{...}` | In matrix and cell literals, `f (x)` with a space is two elements. Write `f(x)`. |
+| Figures fail headless | Use `graphics_toolkit ("gnuplot")` and `figure ("visible", "off")`, or run with `--no-window-system`. |
+| `readtable` undefined | Octave has no tables; use `omp.io.read_csv`. |

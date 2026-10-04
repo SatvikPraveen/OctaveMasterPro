@@ -189,9 +189,10 @@ load('data.mat');
 data = load('file.txt');     % Load numeric data
 save('file.txt', 'data', '-ascii');
 
-% CSV files
-data = readtable('file.csv');
-writetable(data, 'output.csv');
+% CSV files (Octave has no readtable/writetable)
+M = csvread('file.csv', 1, 0);               % numeric CSV, skip header row
+T = omp.io.read_csv('file.csv');             % mixed types -> struct of columns
+csvwrite('output.csv', M);
 ```
 
 ## Built-in Functions
