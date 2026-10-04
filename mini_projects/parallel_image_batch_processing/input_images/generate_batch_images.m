@@ -14,6 +14,7 @@ function generate_batch_images()
     generate_complex_images(images_dir, 16, 30);    % batch_016 to batch_030  
     generate_large_images(images_dir, 31, 40);      % batch_031 to batch_040
     generate_noisy_images(images_dir, 41, 50);      % batch_041 to batch_050
+    create_image_info_file(images_dir);
     
     fprintf('Batch images generation complete!\n');
     fprintf('Generated 50 test images in: %s\n', images_dir);

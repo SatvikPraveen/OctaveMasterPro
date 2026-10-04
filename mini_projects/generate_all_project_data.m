@@ -15,13 +15,12 @@ function generate_all_project_data()
         fprintf('1. SIGNAL PROCESSING SIMULATION DATA\n');
         fprintf('====================================\n');
         signal_data_path = fullfile('signal_processing_simulation', 'data');
+        % (each generation script already lives in its data directory and is
+        % run from there, so no copying is needed)
         
         if ~exist(signal_data_path, 'dir')
             mkdir(signal_data_path);
         end
-        
-        % Copy generation script to data directory
-        copyfile('signal_processing_simulation/data/generate_sample_signals.m', signal_data_path);
         
         % Change to data directory and run generation
         current_dir = pwd;
@@ -45,9 +44,6 @@ function generate_all_project_data()
             mkdir(stock_data_path);
         end
         
-        % Copy generation script
-        copyfile('stock_market_analysis/sample_data/generate_stock_data.m', stock_data_path);
-        
         cd(stock_data_path);
         
         try
@@ -67,9 +63,6 @@ function generate_all_project_data()
         if ~exist(image_data_path, 'dir')
             mkdir(image_data_path);
         end
-        
-        % Copy generation script
-        copyfile('image_processing_basics/sample_images/generate_test_images.m', image_data_path);
         
         cd(image_data_path);
         
@@ -91,14 +84,10 @@ function generate_all_project_data()
             mkdir(batch_data_path);
         end
         
-        % Copy generation script
-        copyfile('parallel_image_batch_processing/input_images/generate_batch_images.m', batch_data_path);
-        
         cd(batch_data_path);
         
         try
-            generate_batch_images();
-            create_image_info_file('.');
+            generate_batch_images();  % also writes batch_info.txt
             fprintf('✓ Batch images generated successfully\n\n');
         catch err
             fprintf('✗ Error generating batch images: %s\n\n', err.message);
