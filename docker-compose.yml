@@ -1,45 +1,25 @@
-# File location: OctaveMasterPro/docker-compose.yml
-
-version: "3.8"
+# Usage:
+#   JUPYTER_TOKEN=$(openssl rand -hex 16) docker compose up      # JupyterLab
+#   docker compose run --rm octave-cli                           # Octave REPL
+#   docker compose run --rm octave-cli make test                 # test suite
 
 services:
-  octave-master:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: octave_master_pro
+  jupyter:
+    build: .
+    image: octavemasterpro:latest
     ports:
-      - "8888:8888" # Jupyter Lab
-      - "8889:8889" # Alternative port
-    volumes:
-      - ./notebooks:/workspace/OctaveMasterPro/notebooks
-      - ./utils:/workspace/OctaveMasterPro/utils
-      - ./datasets:/workspace/OctaveMasterPro/datasets
-      - ./mini_projects:/workspace/OctaveMasterPro/mini_projects
-      - ./flagship_project:/workspace/OctaveMasterPro/flagship_project
-      - ./cheatsheets:/workspace/OctaveMasterPro/cheatsheets
+      - "127.0.0.1:8888:8888"   # local access only
     environment:
-      - JUPYTER_ENABLE_LAB=yes
-      - OCTAVE_PATH=/workspace/OctaveMasterPro/utils:/workspace/OctaveMasterPro/notebooks/scripts_for_notebook_04
-    working_dir: /workspace/OctaveMasterPro
-    restart: unless-stopped
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-}
+    volumes:
+      - ./:/home/researcher/OctaveMasterPro
 
-  # Optional: Standalone Octave service for CLI access
   octave-cli:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: octave_cli
+    image: octavemasterpro:latest
+    build: .
+    profiles: ["cli"]
     volumes:
-      - ./notebooks:/workspace/OctaveMasterPro/notebooks
-      - ./utils:/workspace/OctaveMasterPro/utils
-      - ./datasets:/workspace/OctaveMasterPro/datasets
-      - ./mini_projects:/workspace/OctaveMasterPro/mini_projects
-      - ./flagship_project:/workspace/OctaveMasterPro/flagship_project
-    environment:
-      - OCTAVE_PATH=/workspace/OctaveMasterPro/utils:/workspace/OctaveMasterPro/notebooks/scripts_for_notebook_04
-    working_dir: /workspace/OctaveMasterPro
-    command: octave --no-gui --interactive
+      - ./:/home/researcher/OctaveMasterPro
+    command: octave --no-gui
     stdin_open: true
     tty: true
-    profiles: ["cli"]
