@@ -71,6 +71,6 @@ function data = load_stock_data(filename, varargin)
         
     catch err
         fprintf('Error loading: %s\n', err.message);
-        data = generate_synthetic_stock_data();
+        data = add_derived_fields(generate_synthetic_stock_data());
     end
 end

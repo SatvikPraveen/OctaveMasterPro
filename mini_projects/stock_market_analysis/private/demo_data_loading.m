@@ -16,6 +16,7 @@ function demo_data_loading()
             'initial_price', 50 + 100*rand(), ...
             'return', 0.05 + 0.15*rand(), ...
             'volatility', 0.15 + 0.25*rand());
+        stock_data{i} = add_derived_fields(stock_data{i});  % adds .returns
     end
     
     % Plot all stocks
@@ -48,8 +49,8 @@ function demo_data_loading()
     end
     
     [ax, h1, h2] = plotyy(1:length(stocks), volumes/1e6, 1:length(stocks), volatilities);
-    set(h1, 'LineStyle', 'o-', 'LineWidth', 2, 'MarkerSize', 8);
-    set(h2, 'LineStyle', 's-', 'LineWidth', 2, 'MarkerSize', 8);
+    set(h1, 'LineStyle', '-', 'Marker', 'o', 'LineWidth', 2, 'MarkerSize', 8);
+    set(h2, 'LineStyle', '-', 'Marker', 's', 'LineWidth', 2, 'MarkerSize', 8);
     set(ax(1), 'XTick', 1:length(stocks), 'XTickLabel', stocks);
     set(ax(2), 'XTick', 1:length(stocks), 'XTickLabel', stocks);
     ylabel(ax(1), 'Avg Volume (M)');

@@ -98,7 +98,7 @@ function demo_price_analysis()
     # Rolling correlations (if multiple assets)
     subplot(3, 3, 7);
     rolling_vol = volatility * 100;
-    plot(rolling_vol, 'purple', 'LineWidth', 1.5);
+    plot(rolling_vol, 'Color', [0.5 0 0.5], 'LineWidth', 1.5);
     title('Rolling 20-Day Volatility');
     ylabel('Volatility (%)'); grid on;
     

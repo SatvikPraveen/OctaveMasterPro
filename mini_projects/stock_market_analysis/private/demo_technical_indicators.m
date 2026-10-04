@@ -55,7 +55,7 @@ function demo_technical_indicators()
     
     % RSI
     subplot(4, 2, 3);
-    plot(rsi_14, 'purple', 'LineWidth', 1.5);
+    plot(rsi_14, 'Color', [0.5 0 0.5], 'LineWidth', 1.5);
     hold on; plot([1, length(rsi_14)], [70, 70], 'r--'); plot([1, length(rsi_14)], [30, 30], 'g--');
     title('RSI (14-period)');
     ylabel('RSI'); ylim([0, 100]); grid on;
@@ -64,7 +64,7 @@ function demo_technical_indicators()
     subplot(4, 2, 4);
     plot(macd, 'b', 'LineWidth', 1.5); hold on;
     plot(signal, 'r', 'LineWidth', 1);
-    bar(macd_hist, 'FaceColor', 'g', 'FaceAlpha', 0.5);
+    bar(macd_hist, 'FaceColor', 'g');  % Octave bar series have no FaceAlpha
     legend('MACD', 'Signal', 'Histogram', 'Location', 'best');
     title('MACD Indicator');
     ylabel('MACD'); grid on;
@@ -88,13 +88,13 @@ function demo_technical_indicators()
     
     % Volume analysis
     subplot(4, 2, 7);
-    bar(volume/1e6, 'FaceColor', 'cyan', 'FaceAlpha', 0.7);
+    bar(volume/1e6, 'FaceColor', 'cyan');  % Octave bar series have no FaceAlpha
     title('Volume');
     ylabel('Volume (M)'); grid on;
     
     # Average True Range
     subplot(4, 2, 8);
-    plot(atr, 'orange', 'LineWidth', 1.5);
+    plot(atr, 'Color', [1 0.5 0], 'LineWidth', 1.5);
     title('Average True Range (14)');
     ylabel('ATR'); grid on;
     
