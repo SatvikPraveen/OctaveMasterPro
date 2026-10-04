@@ -42,7 +42,7 @@ function matched_img = histogram_matching(img, target_img)
     
     for i = 1:h
         for j = 1:w
-            matched_img(i,j) = mapping(img(i,j) + 1); % +1 for MATLAB indexing
+            matched_img(i,j) = mapping(double(img(i,j)) + 1); % +1 for 1-based indexing (double: uint8 255+1 saturates)
         end
     end
     

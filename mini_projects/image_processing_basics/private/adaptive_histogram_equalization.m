@@ -26,6 +26,9 @@ function enhanced_img = adaptive_histogram_equalization(img, varargin)
         normalize_output = false;
     end
     
+    % Integer grey levels 0..255 are used as indices into the mapping
+    img = round(min(max(double(img), 0), 255));
+    
     [h, w] = size(img);
     tile_h = round(h / tile_size(1));
     tile_w = round(w / tile_size(2));
@@ -38,8 +41,10 @@ function enhanced_img = adaptive_histogram_equalization(img, varargin)
             % Define tile boundaries
             row_start = (tile_i-1) * tile_h + 1;
             row_end = min(tile_i * tile_h, h);
+            if tile_i == tile_size(1), row_end = h; end  % cover remainder rows
             col_start = (tile_j-1) * tile_w + 1;
             col_end = min(tile_j * tile_w, w);
+            if tile_j == tile_size(2), col_end = w; end  % cover remainder columns
             
             % Extract tile
             tile = img(row_start:row_end, col_start:col_end);

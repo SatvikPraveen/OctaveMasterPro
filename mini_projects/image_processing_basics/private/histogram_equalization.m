@@ -32,7 +32,7 @@ function equalized_img = histogram_equalization(img)
     equalized_img = zeros(size(img));
     for i = 1:h
         for j = 1:w
-            equalized_img(i,j) = mapping(img(i,j) + 1); % +1 for MATLAB indexing
+            equalized_img(i,j) = mapping(double(img(i,j)) + 1); % +1 for 1-based indexing (double: uint8 255+1 saturates)
         end
     end
     
