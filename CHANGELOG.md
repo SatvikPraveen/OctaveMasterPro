@@ -28,7 +28,7 @@ study, and reproducible infrastructure.
   pre-registered hypotheses, baselines, a negative control, leakage
   protocols and committed results.
 - Data audit of the shipped flagship CSVs.
-- `tests/run_tests.m` and `tests/check_parse.m`; GitHub Actions CI on
+- `tests/run_tests.m`, `tests/check_parse.m`, `tests/check_notebooks.py`; GitHub Actions CI on
   Octave 8.4 and 6.4; Makefile; `CITATION.cff`; `CONTRIBUTING.md`.
 
 ### Changed
@@ -37,6 +37,23 @@ study, and reproducible infrastructure.
   localhost by docker compose.
 
 ### Fixed
+- Notebooks: the teaching code lived in fenced blocks inside markdown
+  cells and never executed. It is now split into code cells, and all 14
+  notebooks run without errors. Correctness fixes include:
+  - struct-based "objects" that silently lost their state (notebooks
+    10–12);
+  - an unsorted-eigenvector LDA direction;
+  - a Newton benchmark that always failed silently;
+  - a Hessian step that was pure rounding noise;
+  - a false FFT error caused by conjugate transposition;
+  - a Poisson solver with a wrong scaling and sign;
+  - a non-converging multigrid;
+  - a mis-specified power analysis.
+- Mini-project demos: unreachable helpers moved to `private/`, and a
+  non-interactive `'all'` mode added.
+- Synthetic stocks shared one return path (correlation 1).
+- The parallel image demo simulated parallelism and reported random
+  memory figures.
 - Five files that did not parse: duplicate subfunctions and a C-style
   ternary.
 - Mask indexing on RGB images in `create_sample_images`.

@@ -64,4 +64,5 @@ interpretation is in the main [README](../README.md#flagship-study-results).
 | `results/` | Committed outputs, with an `environment.txt` recording Octave, BLAS, git revision and configuration. |
 | `datasets/` | Small illustrative CSVs. Usable for data-handling demos, **not** for predictive claims (see the audit). |
 | `parallelized_pipeline_demo.m` | Runs under Octave and demonstrates parallel helpers from `utils/`. Without the `parallel` package it falls back to serial. |
-| `project_scripts/`, `project_notebook.ipynb` | Legacy pipeline written against MATLAB's `table`/`datetime` API, which Octave lacks. Kept for reference only; superseded by `experiment/`. |
+| `project_notebook.ipynb` | Guided walkthrough, ported to Octave. Loads and audits the shipped CSVs, then trains and validates on the simulator with purged forward-chaining CV and reports AUC alongside the "never fails" accuracy baseline. Executes without errors (`make notebooks`). |
+| `project_scripts/` | Legacy pipeline written against MATLAB's `table`/`datetime` API, which Octave lacks. Kept for reference only; superseded by `experiment/` and the notebook. |

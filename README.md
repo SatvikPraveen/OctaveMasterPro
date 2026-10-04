@@ -208,6 +208,7 @@ over the 40 machines of seed 1.
 | Library tests | `make test` | 125 tests in 29 files under `inst/+omp` |
 | Parse check | `make parse` | every tracked `.m` file |
 | Executable docs | `make docs-check` | every code block in `docs/usage_examples.md` |
+| Notebooks | `make notebooks` | all 14 notebooks executed with the Octave kernel; fails on any error output |
 | Experiment smoke test | `make experiment-quick` | 2-seed flagship run; CI asserts that the negative control stays near chance and the oracle above 0.75 |
 
 The CI workflow runs all of the above on Octave 8.4 (Ubuntu 24.04) and
@@ -261,6 +262,12 @@ ci/                   GitHub Actions workflow (move to .github/workflows/ to ena
 ---
 
 ## Learning materials
+
+All 13 curriculum notebooks and the flagship notebook execute
+headlessly with the Octave kernel without errors (`make notebooks`).
+Their demonstrations are checked for correctness as well as for running:
+for example, the FFT check agrees to 6e-14, the spectral Poisson solver
+to 1e-14, and the power analysis reproduces textbook values.
 
 | Notebooks | Topics |
 |---|---|
