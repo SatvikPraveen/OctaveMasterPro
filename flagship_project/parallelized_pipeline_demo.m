@@ -4,6 +4,84 @@
 fprintf('=== OctaveMasterPro Flagship Project ===\n');
 fprintf('Parallel Pipeline Performance Demonstration\n\n');
 
+% Local helper functions. In an Octave script, functions must be defined
+% before the code that calls them, so they live here rather than at the end.
+
+% Helper function for Monte Carlo simulation
+function failure_prob = simulate_equipment_failure()
+    % Simulate equipment failure probability
+    % Based on temperature, vibration, and age factors
+    
+    temp_factor = randn(); % Temperature stress
+    vibration_factor = abs(randn()); % Vibration stress
+    age_factor = rand(); % Equipment age
+    
+    % Combine factors into failure probability
+    failure_prob = 1 / (1 + exp(-(temp_factor + vibration_factor + age_factor - 2)));
+end
+
+function accuracy = evaluate_simple_model(train_data, test_data)
+    % Simple model evaluation for cross-validation demo
+    
+    % Use mean of training data as threshold
+    threshold = mean(train_data(:, 1)); % Use first column (temperature)
+    
+    % Predict based on threshold
+    predictions = test_data(:, 1) > threshold;
+    
+    % Create synthetic labels (for demo)
+    true_labels = test_data(:, 3) > mean(test_data(:, 3)); % Use vibration as proxy
+    
+    % Calculate accuracy
+    accuracy = mean(predictions == true_labels);
+end
+
+function pivot_data = pivot_table_temp_hour(sensor_data)
+    % Create pivot table for temperature by hour
+    % Simplified implementation for demo
+    
+    hours = 0:23;
+    unique_sensors = unique(sensor_data.Sensor_ID);
+    pivot_data = zeros(length(unique_sensors), length(hours));
+    
+    for i = 1:length(unique_sensors)
+        sensor_mask = strcmp(sensor_data.Sensor_ID, unique_sensors{i});
+        sensor_subset = sensor_data(sensor_mask, :);
+        
+        for h = 1:length(hours)
+            hour_mask = sensor_subset.Hour == hours(h);
+            if any(hour_mask)
+                pivot_data(i, h) = mean(sensor_subset.Temperature(hour_mask), 'omitnan');
+            end
+        end
+    end
+end
+
+function report_text = generate_executive_report(summary, cv_results, feature_table)
+    % Generate executive summary report text
+    
+    report_text = sprintf([
+        'EXECUTIVE SUMMARY - IoT Predictive Maintenance System\n'
+        '=====================================================\n\n'
+        'PROJECT OVERVIEW:\n'
+        'Developed advanced predictive maintenance system for industrial equipment\n'
+        'monitoring using %d sensors across %d-day observation period.\n\n'
+        'KEY RESULTS:\n'
+        '- Model accuracy: %.1f%%\n'
+        '- Failure prediction lead time: 48 hours\n'
+        '- Predicted cost savings: $%.0f annually\n'
+        '- System uptime improvement: %.1f%%\n\n'
+        'TECHNICAL ACHIEVEMENTS:\n'
+        '- Real-time anomaly detection\n'
+        '- Parallel processing implementation\n'
+        '- Multi-sensor data fusion\n'
+        '- Automated reporting system\n\n'
+        'DEPLOYMENT STATUS: READY FOR PRODUCTION\n'
+    ], summary.total_sensors, summary.data_period_days, ...
+       summary.model_accuracy * 100, summary.predicted_cost_savings, ...
+       (1 - summary.failure_events / summary.total_sensors) * 100);
+end
+
 % Add utility paths
 addpath('../utils/');
 
@@ -67,15 +145,17 @@ fprintf('Serial execution:\n');
 tic;
 serial_stats = cell(length(stat_functions), 1);
 for i = 1:length(stat_functions)
-    serial_stats{i} = stat_functions{i}(test_matrix, 2); % Along hours dimension
+    % Along hours dimension (transpose: std/min/max do not take dim as 2nd arg)
+    serial_stats{i} = stat_functions{i}(test_matrix.');
 end
 serial_time_stats = toc;
 fprintf('  Time: %.4f seconds\n', serial_time_stats);
 
 % Parallel execution
 fprintf('Parallel execution:\n');
-parallel_results = parallel_statistics(test_matrix, stat_functions);
-parallel_time_stats = parallel_results.computation_time;
+tic;
+parallel_results = parallel_statistics(test_matrix.', stat_functions);
+parallel_time_stats = toc;
 fprintf('  Time: %.4f seconds\n', parallel_time_stats);
 
 speedup_stats = serial_time_stats / parallel_time_stats;
@@ -103,8 +183,9 @@ fprintf('  Time: %.4f seconds\n', serial_time_fft);
 
 % Parallel FFT
 fprintf('Parallel FFT processing:\n');
+tic;
 parallel_fft_results = parallel_fft_analysis(sensor_signals);
-parallel_time_fft = parallel_fft_results.computation_time;
+parallel_time_fft = toc;
 fprintf('  Time: %.4f seconds\n', parallel_time_fft);
 
 speedup_fft = serial_time_fft / parallel_time_fft;
@@ -203,22 +284,30 @@ subplot(2, 2, 4);
 memory_usage = [2.1, 3.8, 1.2, 2.9]; % Simulated memory usage in GB
 cpu_usage = [85, 92, 78, 88]; % Simulated CPU usage percentage
 
-yyaxis left;
-bar(memory_usage, 'FaceColor', [0.8, 0.4, 0.2]);
-ylabel('Memory Usage (GB)');
+% Dual y-axis via plotyy (yyaxis is not implemented in Octave)
+[ax, h_mem, h_cpu] = plotyy(1:4, memory_usage, 1:4, cpu_usage, @bar, @plot);
+set(h_mem, 'FaceColor', [0.8, 0.4, 0.2]);
+set(h_cpu, 'Color', 'k', 'Marker', 'o', 'LineWidth', 2, 'MarkerSize', 8);
+ylabel(ax(1), 'Memory Usage (GB)');
+ylabel(ax(2), 'CPU Usage (%)');
 
-yyaxis right;
-plot(1:4, cpu_usage, 'ko-', 'LineWidth', 2, 'MarkerSize', 8);
-ylabel('CPU Usage (%)');
-
-set(gca, 'XTickLabel', benchmarks);
+set(ax(1), 'XTickLabel', benchmarks);
 title('Resource Utilization');
 grid on;
 xtickangle(45);
 
-suptitle('Parallel Processing Performance Analysis');
+if exist('sgtitle')
+    sgtitle('Parallel Processing Performance Analysis');
+else
+    % sgtitle/suptitle are unavailable in older Octave versions
+    annotation('textbox', [0, 0.95, 1, 0.05], 'String', 'Parallel Processing Performance Analysis', ...
+               'EdgeColor', 'none', 'HorizontalAlignment', 'center', 'FontWeight', 'bold');
+end
 
 % Save performance analysis
+if ~exist('report/figures', 'dir')
+    mkdir('report/figures');
+end
 save_publication_figure('report/figures/performance_metrics', 'Format', 'both');
 
 % Final summary
@@ -237,78 +326,3 @@ else
 end
 
 fprintf('\nParallel pipeline demonstration completed successfully!\n');
-
-% Helper function for Monte Carlo simulation
-function failure_prob = simulate_equipment_failure()
-    % Simulate equipment failure probability
-    % Based on temperature, vibration, and age factors
-    
-    temp_factor = randn(); % Temperature stress
-    vibration_factor = abs(randn()); % Vibration stress
-    age_factor = rand(); % Equipment age
-    
-    % Combine factors into failure probability
-    failure_prob = 1 / (1 + exp(-(temp_factor + vibration_factor + age_factor - 2)));
-end
-
-function accuracy = evaluate_simple_model(train_data, test_data)
-    % Simple model evaluation for cross-validation demo
-    
-    % Use mean of training data as threshold
-    threshold = mean(train_data(:, 1)); % Use first column (temperature)
-    
-    % Predict based on threshold
-    predictions = test_data(:, 1) > threshold;
-    
-    % Create synthetic labels (for demo)
-    true_labels = test_data(:, 3) > mean(test_data(:, 3)); % Use vibration as proxy
-    
-    % Calculate accuracy
-    accuracy = mean(predictions == true_labels);
-end
-
-function pivot_data = pivot_table_temp_hour(sensor_data)
-    % Create pivot table for temperature by hour
-    % Simplified implementation for demo
-    
-    hours = 0:23;
-    unique_sensors = unique(sensor_data.Sensor_ID);
-    pivot_data = zeros(length(unique_sensors), length(hours));
-    
-    for i = 1:length(unique_sensors)
-        sensor_mask = strcmp(sensor_data.Sensor_ID, unique_sensors{i});
-        sensor_subset = sensor_data(sensor_mask, :);
-        
-        for h = 1:length(hours)
-            hour_mask = sensor_subset.Hour == hours(h);
-            if any(hour_mask)
-                pivot_data(i, h) = mean(sensor_subset.Temperature(hour_mask), 'omitnan');
-            end
-        end
-    end
-end
-
-function report_text = generate_executive_report(summary, cv_results, feature_table)
-    % Generate executive summary report text
-    
-    report_text = sprintf([
-        'EXECUTIVE SUMMARY - IoT Predictive Maintenance System\n'
-        '=====================================================\n\n'
-        'PROJECT OVERVIEW:\n'
-        'Developed advanced predictive maintenance system for industrial equipment\n'
-        'monitoring using %d sensors across %d-day observation period.\n\n'
-        'KEY RESULTS:\n'
-        '- Model accuracy: %.1f%%\n'
-        '- Failure prediction lead time: 48 hours\n'
-        '- Predicted cost savings: $%.0f annually\n'
-        '- System uptime improvement: %.1f%%\n\n'
-        'TECHNICAL ACHIEVEMENTS:\n'
-        '- Real-time anomaly detection\n'
-        '- Parallel processing implementation\n'
-        '- Multi-sensor data fusion\n'
-        '- Automated reporting system\n\n'
-        'DEPLOYMENT STATUS: READY FOR PRODUCTION\n'
-    ], summary.total_sensors, summary.data_period_days, ...
-       summary.model_accuracy * 100, summary.predicted_cost_savings, ...
-       (1 - summary.failure_events / summary.total_sensors) * 100);
-end
