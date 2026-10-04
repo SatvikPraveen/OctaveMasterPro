@@ -49,18 +49,16 @@ function es = effect_size (x, y, type)
 endfunction
 
 function r = midrank (v)
-  [s, o] = sort (v);
-  n = numel (v);
+  ## Mid-ranks (ties share the average of their ranks), vectorized.
+  [sv, o] = sort (v(:));
+  n = numel (sv);
+  starts = [true; diff(sv) != 0];
+  grp = cumsum (starts);
+  first = find (starts);
+  last = [first(2:end) - 1; n];
+  mid = (first + last) / 2;
   r = zeros (n, 1);
-  i = 1;
-  while (i <= n)
-    j = i;
-    while (j < n && s(j+1) == s(i))
-      j += 1;
-    endwhile
-    r(o(i:j)) = (i + j) / 2;
-    i = j + 1;
-  endwhile
+  r(o) = mid(grp);
 endfunction
 
 %!test
