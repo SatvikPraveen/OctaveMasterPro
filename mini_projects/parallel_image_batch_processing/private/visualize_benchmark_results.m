@@ -2,6 +2,7 @@
 % (split out of performance_benchmark.m so it can be called from other files)
 
 function visualize_benchmark_results(benchmark_results)
+    operation_names = benchmark_results.operation_names;
     % Create comprehensive visualization of benchmark results
     
     fprintf('Generating benchmark visualizations...\n');
@@ -91,8 +92,8 @@ function visualize_benchmark_results(benchmark_results)
     op_throughput = squeeze(benchmark_results.throughput(mid_batch_idx, mid_worker_idx, :));
     
     [ax, h1, h2] = plotyy(1:length(operation_names), op_times, 1:length(operation_names), op_throughput);
-    set(h1, 'LineStyle', '-o', 'LineWidth', 2, 'MarkerSize', 8);
-    set(h2, 'LineStyle', '-s', 'LineWidth', 2, 'MarkerSize', 8);
+    set(h1, 'LineStyle', '-', 'Marker', 'o', 'LineWidth', 2, 'MarkerSize', 8);
+    set(h2, 'LineStyle', '-', 'Marker', 's', 'LineWidth', 2, 'MarkerSize', 8);
     
     set(ax(1), 'XTick', 1:length(operation_names), 'XTickLabel', operation_names);
     set(ax(2), 'XTick', 1:length(operation_names), 'XTickLabel', operation_names);
@@ -129,8 +130,8 @@ function visualize_benchmark_results(benchmark_results)
     end
     
     [ax, h1, h2] = plotyy(benchmark_results.batch_sizes, best_configs, benchmark_results.batch_sizes, best_speedups);
-    set(h1, 'LineStyle', '-o', 'LineWidth', 2, 'MarkerSize', 8, 'Color', 'blue');
-    set(h2, 'LineStyle', '-s', 'LineWidth', 2, 'MarkerSize', 8, 'Color', 'red');
+    set(h1, 'LineStyle', '-', 'Marker', 'o', 'LineWidth', 2, 'MarkerSize', 8, 'Color', 'blue');
+    set(h2, 'LineStyle', '-', 'Marker', 's', 'LineWidth', 2, 'MarkerSize', 8, 'Color', 'red');
     ylabel(ax(1), 'Optimal Workers');
     ylabel(ax(2), 'Best Speedup');
     xlabel('Batch Size');

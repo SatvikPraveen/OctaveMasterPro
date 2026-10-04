@@ -96,7 +96,7 @@ function benchmark_results = performance_benchmark(test_dir, operations, varargi
     end
     
     % Calculate speedups and efficiency
-    calculate_performance_metrics(benchmark_results);
+    benchmark_results = calculate_performance_metrics(benchmark_results);
     
     % Visualize results
     visualize_benchmark_results(benchmark_results);

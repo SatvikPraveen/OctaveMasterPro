@@ -25,21 +25,23 @@ function filtered_img = apply_simple_bilateral(img, strength)
     [x, y] = meshgrid(-pad_size:pad_size);
     spatial_weights = exp(-(x.^2 + y.^2) / (2 * sigma_spatial^2));
     
+    img = double(img);
     padded_img = padarray(img, [pad_size, pad_size], 'replicate');
     
-    # Simplified bilateral filtering (faster approximation)
-    for i = 1:h
-        for j = 1:w
-            neighborhood = padded_img(i:i+kernel_size-1, j:j+kernel_size-1);
-            center_value = img(i, j);
-            
-            intensity_diff = abs(neighborhood - center_value);
-            intensity_weights = exp(-intensity_diff.^2 / (2 * sigma_intensity^2));
-            
-            combined_weights = spatial_weights .* intensity_weights;
-            combined_weights = combined_weights / sum(combined_weights(:));
-            
-            filtered_img(i, j) = sum(sum(neighborhood .* combined_weights));
+    # Simplified bilateral filtering, accumulated per kernel offset instead
+    # of per pixel (same weights and result, but vectorised over the image
+    # so a 512x512 RGB image takes well under a second instead of minutes)
+    weighted_sum = zeros(h, w);
+    weight_total = zeros(h, w);
+    for dy = 0:kernel_size-1
+        for dx = 0:kernel_size-1
+            shifted = padded_img(1+dy:h+dy, 1+dx:w+dx);
+            intensity_diff = abs(shifted - img);
+            weights = spatial_weights(dy+1, dx+1) * ...
+                      exp(-intensity_diff.^2 / (2 * sigma_intensity^2));
+            weighted_sum = weighted_sum + weights .* shifted;
+            weight_total = weight_total + weights;
         end
     end
+    filtered_img = weighted_sum ./ weight_total;
 end

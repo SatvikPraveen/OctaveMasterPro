@@ -387,8 +387,8 @@ function memory_analysis_demo()
     end
     
     [ax, h1, h2] = plotyy(batch_sizes, optimal_batch_memory, batch_sizes, optimal_batch_time);
-    set(h1, 'LineStyle', '-o', 'LineWidth', 2, 'Color', 'blue');
-    set(h2, 'LineStyle', '-s', 'LineWidth', 2, 'Color', 'red');
+    set(h1, 'LineStyle', '-', 'Marker', 'o', 'LineWidth', 2, 'Color', 'blue');
+    set(h2, 'LineStyle', '-', 'Marker', 's', 'LineWidth', 2, 'Color', 'red');
     ylabel(ax(1), 'Memory Usage (MB)');
     ylabel(ax(2), 'Processing Time (s)');
     xlabel('Batch Size');
@@ -402,8 +402,8 @@ function memory_analysis_demo()
     memory_util = 20 + workers * 8;
     
     [ax, h1, h2] = plotyy(workers, cpu_util, workers, memory_util);
-    set(h1, 'LineStyle', '-o', 'LineWidth', 2, 'Color', 'green');
-    set(h2, 'LineStyle', '-^', 'LineWidth', 2, 'Color', 'orange');
+    set(h1, 'LineStyle', '-', 'Marker', 'o', 'LineWidth', 2, 'Color', 'green');
+    set(h2, 'LineStyle', '-', 'Marker', '^', 'LineWidth', 2, 'Color', [1 0.5 0]);
     ylabel(ax(1), 'CPU Utilization (%)');
     ylabel(ax(2), 'Memory Usage (MB)');
     xlabel('Number of Workers');

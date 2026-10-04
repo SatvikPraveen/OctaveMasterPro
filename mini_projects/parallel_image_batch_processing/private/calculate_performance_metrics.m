@@ -1,7 +1,7 @@
 % Location: mini_projects/parallel_image_batch_processing/private/calculate_performance_metrics.m
 % (split out of performance_benchmark.m so it can be called from other files)
 
-function calculate_performance_metrics(benchmark_results)
+function benchmark_results = calculate_performance_metrics(benchmark_results)
     % Calculate derived performance metrics
     
     [num_batches, num_workers, num_operations] = size(benchmark_results.mean_times);
