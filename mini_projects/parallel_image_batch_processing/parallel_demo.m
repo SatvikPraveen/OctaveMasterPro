@@ -692,18 +692,3 @@ function img = create_gradient_test_image(size_val)
     img(:,:,2) = y / size_val; # Green gradient
     img(:,:,3) = (x + y) / (2 * size_val); # Blue gradient
 end
-
-function cleanup_temp_dirs(dir_list)
-    # Clean up temporary directories
-    
-    for i = 1:length(dir_list)
-        if exist(dir_list{i}, 'dir')
-            try
-                rmdir(dir_list{i}, 's');
-                fprintf('Cleaned up directory: %s\n', dir_list{i});
-            catch
-                fprintf('Could not clean up directory: %s\n', dir_list{i});
-            end
-        end
-    end
-end
