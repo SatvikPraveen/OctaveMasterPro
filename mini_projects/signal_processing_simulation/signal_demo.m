@@ -326,16 +326,6 @@ function complete_pipeline_demo()
     fprintf('Complete pipeline demonstration finished.\n');
 end
 
-function filter_design_demo()
-    fprintf('\n--- Filter Design Demonstration ---\n');
-    demo_filtering();
-end
-
-function spectrum_analysis_demo()
-    fprintf('\n--- Spectrum Analysis Demonstration ---\n');
-    demo_spectrum_analyzer();
-end
-
 function interactive_signal_lab()
     % Interactive signal processing laboratory
     

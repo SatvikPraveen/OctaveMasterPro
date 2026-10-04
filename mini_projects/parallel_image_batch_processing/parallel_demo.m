@@ -367,18 +367,6 @@ function memory_analysis_demo()
     fprintf('Memory analysis demonstration complete.\n');
 end
 
-function benchmarking_demo()
-    fprintf('\n--- Performance Benchmarking Demo ---\n');
-    
-    input_dir = 'benchmark_test_images';
-    image_files = generate_test_images(input_dir, 24);
-    
-    # Test multiple operation functions
-    benchmark_data = benchmark_processing_modes(image_files, @enhance_operation);
-    
-    cleanup_temp_dirs({input_dir});
-end
-
 function complete_pipeline_demo()
     fprintf('\n--- Complete Parallel Pipeline Demo ---\n');
     

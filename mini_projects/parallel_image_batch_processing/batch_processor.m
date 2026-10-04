@@ -104,7 +104,11 @@ function results = process_image_batch(input_dir, output_dir, operation_func, va
     fprintf('Images processed: %d\n', results.num_images_processed);
     fprintf('Total time: %.2f seconds\n', results.processing_time);
     fprintf('Processing rate: %.2f images/second\n', results.images_per_second);
-    fprintf('Mode: %s\n', results.use_parallel ? 'Parallel' : 'Sequential');
+    if results.use_parallel
+        fprintf('Mode: Parallel\n');
+    else
+        fprintf('Mode: Sequential\n');
+    end
     if use_parallel
         fprintf('Workers: %d\n', results.num_workers);
     end

@@ -129,21 +129,6 @@ function efficient_frontier = calculate_efficient_frontier(returns_matrix, num_p
     end
 end
 
-function risk_metrics = calculate_risk_metrics(portfolio_returns)
-    % Calculate comprehensive risk metrics
-    
-    clean_returns = portfolio_returns(~isnan(portfolio_returns));
-    
-    risk_metrics.volatility = std(clean_returns) * sqrt(252);
-    risk_metrics.downside_deviation = sqrt(mean(min(clean_returns, 0).^2)) * sqrt(252);
-    risk_metrics.var_95 = quantile_simple(clean_returns, 0.05);
-    risk_metrics.var_99 = quantile_simple(clean_returns, 0.01);
-    risk_metrics.cvar_95 = mean(clean_returns(clean_returns <= risk_metrics.var_95));
-    risk_metrics.max_drawdown = calculate_max_drawdown(cumprod(1 + clean_returns));
-    risk_metrics.sortino_ratio = mean(clean_returns) * 252 / risk_metrics.downside_deviation;
-    risk_metrics.calmar_ratio = mean(clean_returns) * 252 / abs(risk_metrics.max_drawdown);
-end
-
 function q = quantile_simple(data, p)
     sorted_data = sort(data);
     n = length(sorted_data);
