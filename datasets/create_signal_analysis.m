@@ -3,6 +3,13 @@
 
 fprintf('Generating signal analysis data...\n');
 
+% butter/chirp/filtfilt come from the Octave Forge signal package
+try
+    pkg load signal
+catch
+    warning('signal package not available; filter/chirp steps may fail (pkg install -forge signal)');
+end
+
 % Sampling parameters
 fs = 1000; % Sampling frequency (Hz)
 N = 5000;  % Number of samples

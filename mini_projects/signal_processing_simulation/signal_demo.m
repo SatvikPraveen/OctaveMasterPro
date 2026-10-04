@@ -9,6 +9,13 @@ function signal_demo()
     fprintf('====================================================\n');
     fprintf('    SIGNAL PROCESSING SIMULATION DEMONSTRATION     \n');
     fprintf('====================================================\n\n');
+
+    % butter/chirp/filtfilt come from the Octave Forge signal package
+    try
+        pkg load signal
+    catch
+        warning('signal package not available; filter/chirp steps may fail (pkg install -forge signal)');
+    end
     
     % Set random seed for reproducible results
     rand('state', 42);

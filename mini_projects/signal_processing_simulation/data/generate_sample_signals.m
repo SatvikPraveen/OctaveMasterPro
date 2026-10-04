@@ -5,6 +5,13 @@ function generate_sample_signals()
     % Generate comprehensive sample signals for demonstrations
     
     fprintf('Generating sample signal data...\n');
+
+    % butter/chirp/filtfilt come from the Octave Forge signal package
+    try
+        pkg load signal
+    catch
+        warning('signal package not available; filter/chirp steps may fail (pkg install -forge signal)');
+    end
     
     % Create data directory if it doesn't exist
     data_dir = fileparts(mfilename('fullpath'));

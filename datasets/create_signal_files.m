@@ -3,6 +3,13 @@
 
 fprintf('Creating signal files for OctaveMasterPro...\n');
 
+% butter/chirp/filtfilt come from the Octave Forge signal package
+try
+    pkg load signal
+catch
+    warning('signal package not available; filter/chirp steps may fail (pkg install -forge signal)');
+end
+
 % Create signal directories
 if ~exist('signals', 'dir')
     mkdir('signals');
