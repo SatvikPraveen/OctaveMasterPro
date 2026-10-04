@@ -1,0 +1,21 @@
+timestamp_utc: 2026-10-04T03:39:12Z
+octave: 8.4.0
+arch: x86_64-pc-linux-gnu
+nproc: 4
+blas: OpenBLAS (config: OpenBLAS 0.3.26 NO_LAPACKE DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=64)
+lapack: Linear Algebra PACKage Version 3.12.0
+packages: control-4.0.1 struct-1.0.18 parallel-4.0.2 signal-1.4.5 statistics-1.6.3
+git_commit: 26615d4871b2e8934ff3d3236bb25d5420435774
+git_dirty: 0
+config.seeds: [1 2 3 4 5]
+config.units: 40
+config.days: 120
+config.stride: 6
+config.horizon: 72
+config.embargo: 24
+config.folds: 4
+config.lambda: 1
+config.knn_k: 25
+config.bootstrap: 1000
+config.quick: false
+config.figure: true
