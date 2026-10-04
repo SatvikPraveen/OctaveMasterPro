@@ -1,0 +1,5 @@
+octave: 8.4.0
+blas: OpenBLAS (config: OpenBLAS 0.3.26 NO_LAPACKE DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=64)
+lapack: Linear Algebra PACKage Version 3.12.0
+git_commit: 3898be6ad2823621c35e985dbb71bd7e7f2d55a0
+git_dirty: 0
