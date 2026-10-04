@@ -156,10 +156,12 @@ function market_effect = get_market_effect(current_date, symbol)
     % Get market regime effects for specific dates
     
     market_effect = 0;
+    % Dates are built with numeric datenum(y, m, d): this runs once per
+    % simulated day, and parsing date strings here made generation take minutes.
     
     # COVID crash (March 2020)
-    covid_crash_start = datenum('2020-03-01');
-    covid_crash_end = datenum('2020-04-01');
+    covid_crash_start = datenum(2020, 3, 1);
+    covid_crash_end = datenum(2020, 4, 1);
     
     if current_date >= covid_crash_start && current_date <= covid_crash_end
         crash_intensity = (current_date - covid_crash_start) / (covid_crash_end - covid_crash_start);
@@ -174,8 +176,8 @@ function market_effect = get_market_effect(current_date, symbol)
     end
     
     # Tech rally (2020-2021)
-    tech_rally_start = datenum('2020-05-01');
-    tech_rally_end = datenum('2021-12-31');
+    tech_rally_start = datenum(2020, 5, 1);
+    tech_rally_end = datenum(2021, 12, 31);
     
     if current_date >= tech_rally_start && current_date <= tech_rally_end
         if strcmp(symbol, 'AAPL') || strcmp(symbol, 'GOOGL') || strcmp(symbol, 'MSFT')
@@ -186,8 +188,8 @@ function market_effect = get_market_effect(current_date, symbol)
     end
     
     # Interest rate concerns (2022)
-    rate_concerns_start = datenum('2022-01-01');
-    rate_concerns_end = datenum('2022-12-31');
+    rate_concerns_start = datenum(2022, 1, 1);
+    rate_concerns_end = datenum(2022, 12, 31);
     
     if current_date >= rate_concerns_start && current_date <= rate_concerns_end
         # Growth stocks more affected
