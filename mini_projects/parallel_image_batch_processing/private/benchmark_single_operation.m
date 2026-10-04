@@ -11,12 +11,11 @@ function [exec_time, memory_usage] = benchmark_single_operation(image_files, ope
     tic;
     
     if use_parallel
-        # Simulate parallel processing
-        chunk_size = max(1, floor(length(image_files) / num_workers));
+        chunk_size = max(1, ceil(length(image_files) / num_workers));
         chunks = create_processing_chunks(image_files, chunk_size);
-        
-        for chunk_idx = 1:length(chunks)
-            process_image_chunk(chunks{chunk_idx}, '', operation_func, false);
+        [~, mode] = run_chunks(chunks, '', operation_func, false, num_workers);
+        if isempty(strfind(mode, 'parallel ('))
+            warning('benchmark_single_operation: %s; "parallel" timing is sequential', mode);
         end
     else
         # Sequential processing

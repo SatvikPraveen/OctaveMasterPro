@@ -19,29 +19,22 @@ function results = parallel_image_processing(image_files, output_dir, operation_
         fprintf('Processing %d chunks...\n', num_chunks);
     end
     
-    # Process chunks (simulated parallel processing)
-    chunk_results = cell(num_chunks, 1);
-    
+    # Process chunks on worker processes (falls back to sequential)
+    [chunk_results, mode] = run_chunks(chunks, output_dir, operation_func, save_results, num_workers);
     for chunk_idx = 1:num_chunks
-        if show_progress
-            fprintf('Processing chunk %d/%d...\n', chunk_idx, num_chunks);
-        end
-        
-        chunk_files = chunks{chunk_idx};
-        chunk_result = process_image_chunk(chunk_files, output_dir, operation_func, save_results);
-        
-        chunk_results{chunk_idx} = chunk_result;
-        num_processed = num_processed + chunk_result.num_processed;
-        error_count = error_count + chunk_result.error_count;
-        
-        # Monitor memory usage
-        memory_usage = [memory_usage, get_memory_usage()];
+        num_processed = num_processed + chunk_results{chunk_idx}.num_processed;
+        error_count = error_count + chunk_results{chunk_idx}.error_count;
+    end
+    memory_usage = get_memory_usage();
+    if show_progress
+        fprintf('Execution mode: %s\n', mode);
     end
     
     results.num_processed = num_processed;
     results.error_count = error_count;
     results.memory_usage = memory_usage;
     results.chunk_results = chunk_results;
+    results.execution_mode = mode;
     
     fprintf('Parallel processing completed: %d images processed.\n', num_processed);
 end
