@@ -442,7 +442,7 @@ function compare_filter_methods_demo()
     t = 0:1/fs:2;
     signal = sin(2*pi*50*t) + 0.5*sin(2*pi*100*t) + 0.2*randn(size(t));
     
-    compare_filter_methods(signal, 75);
+    compare_filter_methods(signal, 75, fs);
     
     fprintf('Filter methods comparison complete.\n');
 end

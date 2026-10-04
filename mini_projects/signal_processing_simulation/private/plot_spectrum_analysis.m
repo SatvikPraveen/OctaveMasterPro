@@ -61,7 +61,13 @@ function plot_spectrum_analysis(signal, frequencies, magnitude, phase, fs, windo
         colorbar;
     else
         % Just show a simple bar plot of peak frequencies
-        [peaks, locs] = findpeaks(magnitude, 'MinPeakHeight', max(magnitude)-20, 'NPeaks', 10);
+        % Octave's findpeaks rejects negative data: shift the dB spectrum
+        floor_db = min(magnitude);
+        [peaks, locs] = findpeaks(magnitude - floor_db, 'MinPeakHeight', max(eps, max(magnitude)-20 - floor_db));
+        [~, order] = sort(peaks, 'descend');
+        keep = sort(order(1:min(10, numel(order))));
+        peaks = peaks(keep) + floor_db;
+        locs = locs(keep);
         stem(frequencies(locs), peaks, 'filled');
         title('Peak Frequencies');
         xlabel('Frequency (Hz)');

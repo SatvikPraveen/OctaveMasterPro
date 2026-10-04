@@ -58,24 +58,29 @@ function [filtered_signal, filter_coeffs] = apply_filter(signal, filter_type, cu
             error('Unknown filter type: %s', filter_type);
     end
     
+    % butter/cheby1/cheby2/ellip take 'low', 'high', 'bandpass' or 'stop'
+    design_types = struct('lowpass', 'low', 'highpass', 'high', ...
+                          'bandpass', 'bandpass', 'bandstop', 'stop');
+    design_type = design_types.(lower(filter_type));
+    
     % Design filter based on method
     switch lower(method)
         case 'butter'
-            [b, a] = butter(filter_order, Wn, filter_type);
+            [b, a] = butter(filter_order, Wn, design_type);
             
         case 'cheby1'
             ripple = 1; % dB
             if length(varargin) >= 3
                 ripple = varargin{3};
             end
-            [b, a] = cheby1(filter_order, ripple, Wn, filter_type);
+            [b, a] = cheby1(filter_order, ripple, Wn, design_type);
             
         case 'cheby2'
             stopband_atten = 40; % dB
             if length(varargin) >= 3
                 stopband_atten = varargin{3};
             end
-            [b, a] = cheby2(filter_order, stopband_atten, Wn, filter_type);
+            [b, a] = cheby2(filter_order, stopband_atten, Wn, design_type);
             
         case 'ellip'
             passband_ripple = 1; % dB
@@ -86,7 +91,7 @@ function [filtered_signal, filter_coeffs] = apply_filter(signal, filter_type, cu
             if length(varargin) >= 4
                 stopband_atten = varargin{4};
             end
-            [b, a] = ellip(filter_order, passband_ripple, stopband_atten, Wn, filter_type);
+            [b, a] = ellip(filter_order, passband_ripple, stopband_atten, Wn, design_type);
             
         otherwise
             error('Unknown filter method: %s', method);

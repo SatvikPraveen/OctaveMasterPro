@@ -7,7 +7,11 @@ function peak_detection_demo(signal, fs)
     [freq, mag, ~] = analyze_spectrum(signal, fs, 'plot', false);
     
     % Find peaks
-    [peaks, locs] = findpeaks(mag, 'MinPeakHeight', max(mag)-30, 'MinPeakDistance', 10);
+    % Octave's findpeaks rejects negative data, so search the spectrum
+    % (in dB) shifted to be non-negative and shift the peaks back
+    floor_db = min(mag);
+    [peaks, locs] = findpeaks(mag - floor_db, 'MinPeakHeight', max(eps, max(mag)-30 - floor_db), 'MinPeakDistance', 10);
+    peaks = peaks + floor_db;
     peak_freqs = freq(locs);
     
     figure('Position', [100, 100, 1200, 600]);
