@@ -1,0 +1,70 @@
+# GitHub Actions workflow. To enable it:
+#   mkdir -p .github/workflows && git mv ci/github-actions-ci.yml .github/workflows/ci.yml
+# (Pushing files under .github/workflows/ requires a token with the GitHub
+# "workflow" scope, so the workflow is versioned here until it is moved.)
+
+name: CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: "1"
+
+jobs:
+  test:
+    name: Library tests (Octave ${{ matrix.os == 'ubuntu-24.04' && '8.4' || '6.4' }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-22.04]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install GNU Octave
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            octave octave-signal octave-statistics gnuplot-nox
+      - name: Environment
+        run: octave --no-gui --eval "addpath inst; omp.repro.env_info ('print');"
+      - name: Unit and property tests
+        run: octave --no-gui --eval "addpath tests; exit (! run_tests ());"
+      - name: Parse check (all tracked .m files)
+        run: octave --no-gui --eval "addpath tests; exit (! check_parse ());"
+
+  experiment-smoke:
+    name: Flagship experiment (quick mode)
+    runs-on: ubuntu-24.04
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install GNU Octave
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends octave gnuplot-nox
+      - name: Data audit and quick experiment
+        run: |
+          octave --no-gui --no-window-system --eval "
+            addpath ('flagship_project/experiment');
+            A = audit_shipped_data ('ci-results');
+            R = run_pdm_experiment ('Quick', true, 'Figure', false, 'OutDir', 'ci-results');
+            T = R.table;
+            ctrl = [T(strcmp ({T.model}, 'shuffled_control')).auc];
+            orac = [T(strcmp ({T.model}, 'oracle')).auc];
+            printf ('control AUC %s | oracle AUC %s\n', mat2str (ctrl, 3), mat2str (orac, 3));
+            exit (any (abs (ctrl - 0.5) > 0.15) || any (orac < 0.75));"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quick-experiment-results
+          path: ci-results/

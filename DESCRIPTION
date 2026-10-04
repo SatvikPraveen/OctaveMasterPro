@@ -1,0 +1,19 @@
+Name: octavemasterpro
+Version: 0.2.0
+Date: 2026-10-04
+Author: Satvik Praveen
+Maintainer: Satvik Praveen
+Title: Verified numerical methods and evaluation tools for GNU Octave
+Description: Tested implementations of numerical linear algebra (Householder
+ QR, Gram-Schmidt variants, randomized SVD), quasi-Newton optimization with
+ strong-Wolfe line search, resampling-based statistical inference (BCa and
+ cluster bootstrap, permutation tests, multiplicity corrections, effect
+ sizes), Welch spectral estimation, leakage-aware model evaluation (DeLong
+ AUC, calibration, purged temporal cross-validation) and a predictive-
+ maintenance simulator with known ground truth. Every function carries
+ built-in tests that check results against analytic references or
+ published values.
+Categories: Numerical, Statistics, Machine Learning
+Depends: octave (>= 6.1.0)
+License: MIT
+Url: https://github.com/SatvikPraveen/OctaveMasterPro

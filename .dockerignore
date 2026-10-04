@@ -1,61 +1,13 @@
-# File location: OctaveMasterPro/.dockerignore
-
-# Version control
+# Keep the image build context small; source, tests and docs are included
+# so `make check` works inside the image without a bind mount.
 .git/
-.gitignore
-*.git*
-
-# Documentation
-*.md
-docs/
-LICENSE
-
-# IDE and editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
-
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Jupyter checkpoints
-.ipynb_checkpoints/
-
-# Build artifacts
+.github/
+ci/
+.claude/
 build/
-dist/
-*.egg-info/
-
-# Test files
-test/
-tests/
-*test*
-
-# Temporary files
-*.tmp
-*.temp
-temp/
-tmp/
-
-# Large datasets (keep structure but ignore large files)
-datasets/*.csv
-datasets/*.mat
-datasets/images/*.jpg
-datasets/images/*.png
-datasets/signals/*.wav
-datasets/signals/*.dat
-
-# OS generated files
-.directory
-*.db
+**/.ipynb_checkpoints/
+**/__pycache__/
+**/octave-workspace
 *.log
+*.swp
+.DS_Store
