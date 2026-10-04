@@ -5,6 +5,44 @@
 clear all;
 clc;
 
+% ========== LOCAL FUNCTIONS ==========
+% (Octave requires functions in a script to be defined before they are
+% called, and after 'clear all', which would otherwise remove them.)
+
+function [mean_val, std_val] = calculate_stats(data)
+    % Calculate basic statistics for input data
+    % Input: data - numerical array
+    % Output: mean_val - mean of data, std_val - standard deviation
+    
+    mean_val = mean(data);
+    std_val = std(data);
+end
+
+function processed = process_signal(signal, threshold)
+    % Process signal by applying threshold-based filtering
+    % Input: signal - input signal array
+    %        threshold - filtering threshold
+    % Output: processed - filtered signal
+    
+    % Simple threshold-based processing
+    processed = signal;
+    processed(abs(signal) < threshold) = 0;
+    
+    % Apply smoothing
+    if length(signal) > 3
+        processed = movmean(processed, 3);  % 3-point moving average (smooth() is MATLAB-only)
+    end
+end
+
+function result = apply_operation(x, y, func_handle)
+    % Apply operation using function handle
+    % Input: x, y - input arrays
+    %        func_handle - function handle for operation
+    % Output: result - result of operation
+    
+    result = func_handle(x, y);
+end
+
 fprintf('=== OctaveMasterPro: Main Script Demo ===\n');
 fprintf('This script demonstrates script organization and function usage.\n\n');
 
@@ -60,46 +98,10 @@ xlabel('x'); ylabel('Result');
 grid on;
 
 subplot(2,2,4);
-histogram(y, 20, 'FaceColor', 'cyan', 'EdgeColor', 'black');
+hist(y, 20, 'FaceColor', 'cyan', 'EdgeColor', 'black');  % histogram() is not available in Octave
 title('Data Distribution');
 xlabel('Value'); ylabel('Frequency');
 grid on;
 
 fprintf('\nScript execution completed successfully!\n');
 fprintf('Check the generated plots and results.\n');
-
-% ========== LOCAL FUNCTIONS ==========
-
-function [mean_val, std_val] = calculate_stats(data)
-    % Calculate basic statistics for input data
-    % Input: data - numerical array
-    % Output: mean_val - mean of data, std_val - standard deviation
-    
-    mean_val = mean(data);
-    std_val = std(data);
-end
-
-function processed = process_signal(signal, threshold)
-    % Process signal by applying threshold-based filtering
-    % Input: signal - input signal array
-    %        threshold - filtering threshold
-    % Output: processed - filtered signal
-    
-    % Simple threshold-based processing
-    processed = signal;
-    processed(abs(signal) < threshold) = 0;
-    
-    % Apply smoothing
-    if length(signal) > 3
-        processed = smooth(processed, 3);
-    end
-end
-
-function result = apply_operation(x, y, func_handle)
-    % Apply operation using function handle
-    % Input: x, y - input arrays
-    %        func_handle - function handle for operation
-    % Output: result - result of operation
-    
-    result = func_handle(x, y);
-end
