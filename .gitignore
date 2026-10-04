@@ -238,4 +238,4 @@ site/
 _site/
 
 # Keep important empty directories with .gitkeep
-!**/.gitkeep
+!**/.gitkeep*.octbin
