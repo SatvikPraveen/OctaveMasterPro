@@ -2,7 +2,7 @@
 #
 # Ubuntu 24.04 ships GNU Octave 8.4, the version the test suite and the
 # published flagship results were produced with.  Python tooling is pinned.
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PIP_NO_CACHE_DIR=1 \
